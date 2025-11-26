@@ -91,6 +91,33 @@ export class SoundService {
     }
   }
 
+  private playArpeggio(frequencies: number[]): void {
+    if (this.isMuted()) return;
+    this.unlockAudio();
+    if (!this.audioContext) return;
+
+    const now = this.audioContext.currentTime;
+    const duration = 500; // ms
+    const type: OscillatorType = 'triangle';
+    const rampDown = true;
+    
+    // Ensure we don't divide by zero if frequencies is empty
+    if (frequencies.length === 0) return;
+
+    // Delay between each note start time in seconds
+    // This creates the arpeggio effect within the total duration
+    const delayBetweenNotesInSeconds = (duration / frequencies.length) / 1000;
+
+    frequencies.forEach((frequency, index) => {
+      this.playTone({
+        startTime: now + index * delayBetweenNotesInSeconds,
+        duration,
+        frequency,
+        type,
+        rampDown,
+      });
+    });
+  }
 
   private playBeep(
     duration: number,
@@ -123,42 +150,16 @@ export class SoundService {
 
   /** Plays a musical, ascending tone for the start of an exercise. */
   public playStartBeep(): void {
-    if (this.isMuted()) return;
-    this.unlockAudio();
-    if (!this.audioContext) return;
-
-    const now = this.audioContext.currentTime;
-    const duration = 500; // ms
-    const type = 'triangle';
-    const rampDown = true;
-
     // An ascending major chord arpeggio (A Major) to signal "Go!"
-    // A4
-    this.playTone({ startTime: now, duration, frequency: 440.00, type,rampDown});
-    // C#5
-    this.playTone({ startTime: now + (duration / 3_000), duration, frequency: 554.37, type,rampDown});
-    // E5
-    this.playTone({ startTime: now + 2 * (duration / 3_000), duration, frequency: 659.26, type, rampDown });
+    const frequencies = [440.00, 554.37, 659.26]; // A4, C#5, E5
+    this.playArpeggio(frequencies);
   }
 
   /** Plays a musical, descending tone for the end of an exercise. */
   public playEndBeep(): void {
-    if (this.isMuted()) return;
-    this.unlockAudio();
-    if (!this.audioContext) return;
-
-    const now = this.audioContext.currentTime;
-    const duration = 500; // ms
-    const type = 'triangle';
-    const rampDown = true;
-
     // A descending major chord arpeggio (A Major) to signal completion.
-    // E5
-    this.playTone({ startTime: now, duration, frequency: 659.26, type, rampDown});
-    // C#5
-    this.playTone({ startTime: now + (duration / 3_000), duration, frequency: 554.37, type, rampDown});
-    // A4
-    this.playTone({ startTime: now + 2 * (duration / 3_000), duration, frequency: 440.00, type, rampDown});
+    const frequencies = [659.26, 554.37, 440.00]; // E5, C#5, A4
+    this.playArpeggio(frequencies);
   }
 
   /** Plays a short, high-pitched beep for pausing the timer. */

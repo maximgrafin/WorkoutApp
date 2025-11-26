@@ -189,49 +189,52 @@
 
         <!-- CONTROLS -->
         <div class="flex flex-col space-y-4">
-            <!-- Controls during Rest Period (Running) -->
-            @if (isWorkoutStarted() && !isWorkoutComplete() && !isPaused() && !isWorkPeriod()) {
-                <div class="flex space-x-4">
-                    <button (click)="goBack()" class="w-1/2 bg-gray-400 text-gray-900 py-3 rounded-xl font-bold text-lg hover:bg-gray-500 transition-colors shadow-md">
-                        {{ dictionary()['goBack'] }}
-                    </button>
-                    <button (click)="skipPhase('rest')" class="w-1/2 bg-pink-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-pink-700 transition-colors shadow-md">
-                        {{ dictionary()['skipRest'] }}
-                    </button>
-                </div>
-            }
-
-            <!-- Controls during Work Period (Running) -->
-            @if (isWorkoutStarted() && !isWorkoutComplete() && !isPaused() && isWorkPeriod()) {
-                <div class="flex space-x-4">
-                    <button (click)="goBack()" class="w-1/2 bg-gray-400 text-gray-900 py-3 rounded-xl font-bold text-lg hover:bg-gray-500 transition-colors shadow-md">
-                        {{ dictionary()['goBack'] }}
-                    </button>
-                    <button (click)="skipPhase('work')" class="w-1/2 bg-pink-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-pink-700 transition-colors shadow-md">
-                        {{ dictionary()['skipExercise'] }}
-                    </button>
-                </div>
-            }
-            
-            <!-- Universal Pause/Resume Button (when running) -->
             @if (isWorkoutStarted() && !isWorkoutComplete()) {
-                <button (click)="pauseResume()" 
-                        class="w-full text-white py-3 rounded-xl font-bold text-lg transition-colors shadow-md"
-                        [class.bg-yellow-500]="isPaused()"
-                        [class.hover:bg-yellow-600]="isPaused()"
-                        [class.bg-indigo-600]="!isPaused()"
-                        [class.hover:bg-indigo-700]="!isPaused()">
-                    {{ pauseButtonText() }}
-                </button>
+                @if (isPaused()) {
+                    <!-- PAUSED STATE -->
+                    <!-- Paused Action Buttons: Go Back and Skip, stacked vertically -->
+                    <div class="flex flex-col space-y-2">
+                        <button (click)="goBack()" class="w-full bg-gray-400 text-gray-900 py-2 rounded-lg font-semibold text-sm hover:bg-gray-500 transition-colors shadow">
+                            {{ dictionary()['goBack'] }}
+                        </button>
+                        @if (isWorkPeriod()) {
+                            <button (click)="skipPhase('work')" class="w-full bg-pink-600 text-white py-2 rounded-lg font-semibold text-sm hover:bg-pink-700 transition-colors shadow">
+                                {{ dictionary()['skipExercise'] }}
+                            </button>
+                        } @else {
+                             <button (click)="skipPhase('rest')" class="w-full bg-pink-600 text-white py-2 rounded-lg font-semibold text-sm hover:bg-pink-700 transition-colors shadow">
+                                {{ dictionary()['skipRest'] }}
+                            </button>
+                        }
+                    </div>
+
+                    <!-- Resume Button -->
+                    <button (click)="pauseResume()"
+                            class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl font-bold text-lg transition-colors shadow-md">
+                        {{ pauseButtonText() }}
+                    </button>
+
+                } @else {
+                    <!-- RUNNING STATE -->
+                    @if (isWorkPeriod()) {
+                        <!-- Running during Work Period: Just Pause -->
+                        <button (click)="pauseResume()"
+                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-lg transition-colors shadow-md">
+                            {{ pauseButtonText() }}
+                        </button>
+                    } @else {
+                        <!-- Running during Rest Period: Pause and Skip Rest -->
+                        <div class="flex flex-col space-y-4">
+                            <button (click)="skipPhase('rest')" class="w-full bg-pink-600 text-white py-2 rounded-lg font-semibold text-sm hover:bg-pink-700 transition-colors shadow">
+                                {{ dictionary()['skipRest'] }}
+                            </button>
+                            <button (click)="pauseResume()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-lg transition-colors shadow-md">
+                                {{ pauseButtonText() }}
+                            </button>
+                        </div>
+                    }
+                }
             }
         </div>
-
-        <!-- Email Link -->
-        @if (!isWorkoutStarted() || isWorkoutComplete()) {
-            <div class="mt-6 text-center text-sm text-gray-500">
-                <a href="mailto:maximsadym@gmail.com" class="hover:text-indigo-600 hover:underline">maximsadym@gmail.com</a>
-            </div>
-        }
-
     </div>
 </div>

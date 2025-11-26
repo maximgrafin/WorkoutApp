@@ -9,6 +9,7 @@ const URLS_TO_CACHE = [
   '/src/app.component.ts',
   '/src/app.component.html',
   '/src/sound.service.ts',
+  '/src/language.service.ts',
   // External resources
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap',
