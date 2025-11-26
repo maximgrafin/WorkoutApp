@@ -5,7 +5,7 @@
         <!-- Mute/Unmute Button -->
         <button (click)="soundService.toggleMute()" 
                 class="absolute top-4 left-4 p-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors z-10">
-            <span class="sr-only">{{ soundService.isMuted() ? 'Unmute' : 'Mute' }}</span>
+            <span class="sr-only">{{ soundService.isMuted() ? dictionary()['unmute'] : dictionary()['mute'] }}</span>
             @if (soundService.isMuted()) {
                 <!-- Muted Icon (Volume Off) -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -20,6 +20,23 @@
             }
         </button>
 
+        @if (!isWorkoutStarted() || isWorkoutComplete()) {
+            <!-- Language Switcher -->
+            <div class="absolute top-4 right-4 flex items-center space-x-1 text-gray-500 z-10">
+                @for (lang of languages; track lang.code; let isFirst = $first) {
+                    @if (!isFirst) {
+                        <div class="w-px h-4 bg-gray-300"></div>
+                    }
+                    <button (click)="languageService.setLanguage(lang.code)" 
+                            class="px-2 py-1 rounded-md hover:bg-gray-200 transition-colors text-sm"
+                            [class.text-indigo-600]="languageService.language() === lang.code"
+                            [class.font-bold]="languageService.language() === lang.code">
+                        {{ lang.name }}
+                    </button>
+                }
+            </div>
+        }
+
         <!-- HEADER -->
         <div>
             <h1 class="text-3xl font-extrabold mb-2"
@@ -29,9 +46,12 @@
                 {{ headerTitle() }}
             </h1>
             @if (statusMessage()) {
-                <p class="text-lg font-semibold mb-6 text-gray-600">
+                <p class="text-lg font-semibold mb-2 text-gray-600">
                     {{ statusMessage() }}
                 </p>
+                <div class="text-xl font-bold text-indigo-600 mb-6">
+                    {{ dictionary()['total'] }} {{ formatTime(totalDuration()) }}
+                </div>
             }
         </div>
 
@@ -57,7 +77,7 @@
                     <p class="text-sm mt-1 font-semibold"
                         [class.text-gray-600]="isPaused()"
                         [class.text-indigo-600]="!isPaused() && isWorkPeriod()"
-                        [class.text-green-600]="!isPaused() && !isWorkPeriod()">Total Time Left: {{ totalTimeRemainingDisplay() }}</p>
+                        [class.text-green-600]="!isPaused() && !isWorkPeriod()">{{ dictionary()['totalTimeLeft'] }} {{ totalTimeRemainingDisplay() }}</p>
                 </div>
             }
 
@@ -66,14 +86,14 @@
                 <!-- Start Button (Visible only when not started or completed) -->
                 <button (click)="startWorkout()" 
                         class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-colors shadow-md mb-6">
-                    {{ isWorkoutComplete() ? 'Start Over' : 'Start Workout' }}
+                    {{ isWorkoutComplete() ? dictionary()['startOver'] : dictionary()['startWorkout'] }}
                 </button>
 
                  <!-- Configuration Sliders -->
                  <div class="mb-6 p-4 bg-gray-100 rounded-xl space-y-4">
                     <!-- Rest Duration Configuration -->
                     <div>
-                        <label for="rest-duration" class="block text-lg font-bold text-gray-800 mb-2">Rest Duration</label>
+                        <label for="rest-duration" class="block text-lg font-bold text-gray-800 mb-2">{{ dictionary()['restDuration'] }}</label>
                         <div class="flex items-center space-x-4">
                             <input id="rest-duration" type="range" min="10" max="60" step="5"
                                    [value]="restDuration()"
@@ -84,7 +104,7 @@
                     </div>
                      <!-- Exercise Duration Multiplier -->
                     <div>
-                        <label for="duration-multiplier" class="block text-lg font-bold text-gray-800 mb-2">Exercise Duration Multiplier</label>
+                        <label for="duration-multiplier" class="block text-lg font-bold text-gray-800 mb-2">{{ dictionary()['exerciseDurationMultiplier'] }}</label>
                         <div class="flex items-center space-x-4">
                             <input id="duration-multiplier" type="range" min="0.5" max="2" step="0.1"
                                    [value]="durationMultiplier()"
@@ -96,7 +116,7 @@
                 </div>
 
                 <div class="border border-gray-200 rounded-xl p-4 mb-6 text-left">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Full Workout Routine</h2>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">{{ dictionary()['fullWorkoutRoutine'] }}</h2>
                     <ol class="list-decimal list-inside space-y-4 text-gray-700">
                         @for (exercise of displayExercises(); track exercise.name) {
                             <li>
@@ -125,7 +145,7 @@
                         <div>
                             <div class="relative w-full h-48 bg-gray-200 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
                                 @if (currentExercise()?.gifUrl; as gifUrl) {
-                                    <img [ngSrc]="gifUrl" [alt]="currentExercise()?.name ?? 'Exercise animation'" fill class="object-contain">
+                                    <img [ngSrc]="gifUrl" [alt]="currentExercise()?.name ?? dictionary()['exerciseAnimation']" fill class="object-contain">
                                 } @else {
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -134,7 +154,7 @@
                             </div>
                             <h2 class="text-2xl font-bold text-gray-900 mb-3">{{ currentExercise()?.name }}</h2>
                             <div class="text-left text-sm">
-                                <span class="font-semibold text-indigo-600">Movement: </span> 
+                                <span class="font-semibold text-indigo-600">{{ dictionary()['movement'] }}</span> 
                                 <span class="text-gray-700">{{ currentExercise()?.explanation }}</span>
                             </div>
                         </div>
@@ -150,15 +170,15 @@
                                         </svg>
                                     }
                                 </div>
-                                <h2 class="text-2xl font-bold text-gray-800 mb-3">Next: {{ next.name }}</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 mb-3">{{ dictionary()['next'] }} {{ next.name }}</h2>
                                 <div class="text-left text-sm">
-                                    <span class="font-semibold text-gray-600">Movement: </span> 
+                                    <span class="font-semibold text-gray-600">{{ dictionary()['movement'] }}</span> 
                                     <span class="text-gray-500">{{ next.explanation }}</span>
                                 </div>
                             } @else {
-                                <h2 class="text-2xl font-bold text-gray-800 mb-3">Final Round Complete!</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 mb-3">{{ dictionary()['finalRoundComplete'] }}</h2>
                                 <div class="text-left text-sm">
-                                    <span class="text-gray-500">Great job! Time to cool down.</span>
+                                    <span class="text-gray-500">{{ dictionary()['coolDown'] }}</span>
                                 </div>
                             }
                         </div>
@@ -173,50 +193,45 @@
             @if (isWorkoutStarted() && !isWorkoutComplete() && !isPaused() && !isWorkPeriod()) {
                 <div class="flex space-x-4">
                     <button (click)="goBack()" class="w-1/2 bg-gray-400 text-gray-900 py-3 rounded-xl font-bold text-lg hover:bg-gray-500 transition-colors shadow-md">
-                        Go Back
+                        {{ dictionary()['goBack'] }}
                     </button>
                     <button (click)="skipPhase('rest')" class="w-1/2 bg-pink-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-pink-700 transition-colors shadow-md">
-                        Skip Rest
+                        {{ dictionary()['skipRest'] }}
                     </button>
                 </div>
             }
 
-            <!-- Navigation Controls (Visible only when Paused) - ROW LAYOUT -->
-            @if (isWorkoutStarted() && !isWorkoutComplete() && isPaused()) {
+            <!-- Controls during Work Period (Running) -->
+            @if (isWorkoutStarted() && !isWorkoutComplete() && !isPaused() && isWorkPeriod()) {
                 <div class="flex space-x-4">
-                    <!-- Go Back Button (Always visible when paused) -->
                     <button (click)="goBack()" class="w-1/2 bg-gray-400 text-gray-900 py-3 rounded-xl font-bold text-lg hover:bg-gray-500 transition-colors shadow-md">
-                        Go Back
+                        {{ dictionary()['goBack'] }}
                     </button>
-                    
-                    <!-- Dynamic Skip Button (Takes up remaining 1/2 width) -->
-                    @if (isWorkPeriod()) {
-                        <button (click)="skipPhase('work')" class="w-1/2 bg-red-500 text-white py-3 rounded-xl font-bold text-lg hover:bg-red-600 transition-colors shadow-md">
-                            Skip Exercise
-                        </button>
-                    }
-                    
-                    @if (!isWorkPeriod()) {
-                        <button (click)="skipPhase('rest')" class="w-1/2 bg-pink-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-pink-700 transition-colors shadow-md">
-                            Skip Rest
-                        </button>
-                    }
+                    <button (click)="skipPhase('work')" class="w-1/2 bg-pink-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-pink-700 transition-colors shadow-md">
+                        {{ dictionary()['skipExercise'] }}
+                    </button>
                 </div>
             }
-
-            <!-- Pause/Resume Button (Visible while running/paused) - LARGER AND AT THE BOTTOM -->
+            
+            <!-- Universal Pause/Resume Button (when running) -->
             @if (isWorkoutStarted() && !isWorkoutComplete()) {
                 <button (click)="pauseResume()" 
-                        class="py-8 rounded-xl font-black text-4xl transition-colors shadow-md"
-                        [class.bg-yellow-500]="!isPaused()"
-                        [class.hover:bg-yellow-600]="!isPaused()"
-                        [class.text-gray-800]="!isPaused()"
-                        [class.bg-green-500]="isPaused()"
-                        [class.hover:bg-green-600]="isPaused()"
-                        [class.text-white]="isPaused()">
+                        class="w-full text-white py-3 rounded-xl font-bold text-lg transition-colors shadow-md"
+                        [class.bg-yellow-500]="isPaused()"
+                        [class.hover:bg-yellow-600]="isPaused()"
+                        [class.bg-indigo-600]="!isPaused()"
+                        [class.hover:bg-indigo-700]="!isPaused()">
                     {{ pauseButtonText() }}
                 </button>
             }
         </div>
+
+        <!-- Email Link -->
+        @if (!isWorkoutStarted() || isWorkoutComplete()) {
+            <div class="mt-6 text-center text-sm text-gray-500">
+                <a href="mailto:maximsadym@gmail.com" class="hover:text-indigo-600 hover:underline">maximsadym@gmail.com</a>
+            </div>
+        }
+
     </div>
 </div>
