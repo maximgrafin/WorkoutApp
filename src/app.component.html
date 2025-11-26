@@ -1,63 +1,184 @@
 <div class="min-h-screen flex items-center justify-center p-4">
     <!-- Main Workout Container -->
-    <div class="w-full max-w-lg bg-white shadow-2xl rounded-xl p-6 md:p-8 text-center">
+    <div class="relative w-full max-w-lg bg-white shadow-2xl rounded-xl p-6 md:p-8 text-center flex flex-col min-h-[38rem]">
         
-        <h1 class="text-3xl font-extrabold text-indigo-700 mb-2">
-            {{ headerTitle() }}
-        </h1>
-        <p class="text-lg font-semibold mb-6 text-gray-600">
-            {{ statusMessage() }}
-        </p>
+        <!-- Mute/Unmute Button -->
+        <button (click)="soundService.toggleMute()" 
+                class="absolute top-4 left-4 p-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors z-10">
+            <span class="sr-only">{{ soundService.isMuted() ? 'Unmute' : 'Mute' }}</span>
+            @if (soundService.isMuted()) {
+                <!-- Muted Icon (Volume Off) -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l-4-4m0 4l4-4" />
+                </svg>
+            } @else {
+                <!-- Unmuted Icon (Volume Up) -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+            }
+        </button>
 
-        <!-- Timer Display -->
-        <div class="bg-indigo-100 rounded-lg p-4 mb-8">
-            <div class="text-7xl font-black text-indigo-800 tabular-nums">
-                {{ timerDisplay() }}
-            </div>
-            <p class="text-sm text-gray-500 mt-1">{{ roundInfo() }}</p>
-            <!-- Total Time Remaining Display -->
-            <p class="text-sm text-gray-500 mt-1 font-semibold">Total Time Left: {{ totalTimeRemainingDisplay() }}</p>
+        <!-- HEADER -->
+        <div>
+            <h1 class="text-3xl font-extrabold mb-2"
+                [class.text-gray-500]="isPaused()"
+                [class.text-green-700]="!isPaused() && !isWorkPeriod() && isWorkoutStarted()"
+                [class.text-indigo-700]="!isPaused() && (isWorkPeriod() || !isWorkoutStarted())">
+                {{ headerTitle() }}
+            </h1>
+            @if (statusMessage()) {
+                <p class="text-lg font-semibold mb-6 text-gray-600">
+                    {{ statusMessage() }}
+                </p>
+            }
         </div>
 
-        <!-- Exercise Details Card -->
-        @if (isWorkoutStarted()) {
-            <div class="border-2 rounded-xl p-4 transition-all duration-300 transform scale-100 mb-6"
-                 [class.border-indigo-600]="isWorkPeriod()"
-                 [class.bg-indigo-50]="isWorkPeriod()"
-                 [class.border-green-600]="!isWorkPeriod() && !isWorkoutComplete() && !isPaused()"
-                 [class.bg-green-50]="!isWorkPeriod() && !isWorkoutComplete() && !isPaused()">
-                
-                <h2 class="text-2xl font-bold text-gray-900 mb-3">{{ currentExercise()?.name }}</h2>
-                
-                <!-- Details -->
-                <div class="text-left text-sm space-y-2">
-                    <div>
-                        <span class="font-semibold text-indigo-600">Muscles:</span> 
-                        <span class="text-gray-700">{{ currentExercise()?.muscles }}</span>
+        <!-- DYNAMIC CONTENT -->
+        <div class="flex-grow">
+            <!-- Timer Display (Visible only during workout) -->
+            @if (isWorkoutStarted()) {
+                <div class="rounded-lg p-4 mb-8 transition-colors duration-300"
+                     [class.bg-gray-200]="isPaused()"
+                     [class.bg-indigo-100]="!isPaused() && isWorkPeriod()"
+                     [class.bg-green-100]="!isPaused() && !isWorkPeriod()">
+                    <div class="text-7xl font-black tabular-nums"
+                         [class.text-gray-800]="isPaused()"
+                         [class.text-indigo-800]="!isPaused() && isWorkPeriod()"
+                         [class.text-green-800]="!isPaused() && !isWorkPeriod()">
+                        {{ timerDisplay() }}
                     </div>
-                    <div>
-                        <span class="font-semibold text-indigo-600">Movement:</span> 
-                        <span class="text-gray-700">{{ currentExercise()?.explanation }}</span>
-                    </div>
+                    <p class="text-sm mt-1"
+                        [class.text-gray-600]="isPaused()"
+                        [class.text-indigo-600]="!isPaused() && isWorkPeriod()"
+                        [class.text-green-600]="!isPaused() && !isWorkPeriod()">{{ roundInfo() }}</p>
+                    <!-- Total Time Remaining Display -->
+                    <p class="text-sm mt-1 font-semibold"
+                        [class.text-gray-600]="isPaused()"
+                        [class.text-indigo-600]="!isPaused() && isWorkPeriod()"
+                        [class.text-green-600]="!isPaused() && !isWorkPeriod()">Total Time Left: {{ totalTimeRemainingDisplay() }}</p>
                 </div>
-            </div>
-        }
-
-        <!-- Controls -->
-        <div class="flex flex-col space-y-4">
-            <!-- Start Button (Visible only when not started or completed) -->
-            @if (!isWorkoutStarted() || isWorkoutComplete()) {
-                <button (click)="startWorkout()" 
-                        class="bg-indigo-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-colors shadow-md">
-                    {{ isWorkoutComplete() ? 'Start Over' : 'Start Workout' }}
-                </button>
             }
 
-            <!-- Skip Rest Button (Visible when Running during Rest Period) -->
-            @if (isWorkoutStarted() && !isWorkoutComplete() && !isPaused() && !isWorkPeriod()) {
-                <button (click)="skipPhase('rest')" class="bg-pink-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-pink-700 transition-colors shadow-md">
-                    Skip Rest ({{ formatTime(timeLeft()) }})
+            <!-- Pre-workout configuration and list -->
+            @if (!isWorkoutStarted() || isWorkoutComplete()) {
+                <!-- Start Button (Visible only when not started or completed) -->
+                <button (click)="startWorkout()" 
+                        class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-colors shadow-md mb-6">
+                    {{ isWorkoutComplete() ? 'Start Over' : 'Start Workout' }}
                 </button>
+
+                 <!-- Configuration Sliders -->
+                 <div class="mb-6 p-4 bg-gray-100 rounded-xl space-y-4">
+                    <!-- Rest Duration Configuration -->
+                    <div>
+                        <label for="rest-duration" class="block text-lg font-bold text-gray-800 mb-2">Rest Duration</label>
+                        <div class="flex items-center space-x-4">
+                            <input id="rest-duration" type="range" min="10" max="60" step="5"
+                                   [value]="restDuration()"
+                                   (input)="onRestDurationChange($event)"
+                                   class="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            <span class="text-xl font-bold text-indigo-700 w-16 text-center">{{ restDuration() }}s</span>
+                        </div>
+                    </div>
+                     <!-- Exercise Duration Multiplier -->
+                    <div>
+                        <label for="duration-multiplier" class="block text-lg font-bold text-gray-800 mb-2">Exercise Duration Multiplier</label>
+                        <div class="flex items-center space-x-4">
+                            <input id="duration-multiplier" type="range" min="0.5" max="2" step="0.1"
+                                   [value]="durationMultiplier()"
+                                   (input)="onDurationMultiplierChange($event)"
+                                   class="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            <span class="text-xl font-bold text-indigo-700 w-16 text-center">{{ durationMultiplier().toFixed(1) }}x</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-xl p-4 mb-6 text-left">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Full Workout Routine</h2>
+                    <ol class="list-decimal list-inside space-y-4 text-gray-700">
+                        @for (exercise of displayExercises(); track exercise.name) {
+                            <li>
+                                <span class="font-semibold text-gray-900">{{ exercise.name }}</span>
+                                <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                    {{ exercise.duration }}s
+                                </span>
+                                <p class="text-sm text-gray-600 pl-6 mt-1">{{ exercise.explanation }}</p>
+                            </li>
+                        }
+                    </ol>
+                </div>
+            }
+
+            <!-- Exercise Details Card / Next Up Info -->
+            @if (isWorkoutStarted() && !isWorkoutComplete()) {
+                <div class="border-2 rounded-xl p-4 transition-colors duration-300 mb-6"
+                    [class.border-indigo-600]="!isPaused() && isWorkPeriod()"
+                    [class.bg-indigo-50]="!isPaused() && isWorkPeriod()"
+                    [class.border-gray-200]="!isPaused() && !isWorkPeriod()"
+                    [class.bg-gray-50]="!isPaused() && !isWorkPeriod()"
+                    [class.border-gray-300]="isPaused()"
+                    [class.bg-gray-100]="isPaused()">
+                    
+                    @if (isWorkPeriod()) {
+                        <div>
+                            <div class="relative w-full h-48 bg-gray-200 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+                                @if (currentExercise()?.gifUrl; as gifUrl) {
+                                    <img [ngSrc]="gifUrl" [alt]="currentExercise()?.name ?? 'Exercise animation'" fill class="object-contain">
+                                } @else {
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                }
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900 mb-3">{{ currentExercise()?.name }}</h2>
+                            <div class="text-left text-sm">
+                                <span class="font-semibold text-indigo-600">Movement: </span> 
+                                <span class="text-gray-700">{{ currentExercise()?.explanation }}</span>
+                            </div>
+                        </div>
+                    } @else {
+                        <div class="opacity-70">
+                            @if (nextExercise(); as next) {
+                                <div class="relative w-full h-48 bg-gray-200 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+                                    @if (next.gifUrl; as gifUrl) {
+                                        <img [ngSrc]="gifUrl" [alt]="next.name" fill class="object-contain">
+                                    } @else {
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    }
+                                </div>
+                                <h2 class="text-2xl font-bold text-gray-800 mb-3">Next: {{ next.name }}</h2>
+                                <div class="text-left text-sm">
+                                    <span class="font-semibold text-gray-600">Movement: </span> 
+                                    <span class="text-gray-500">{{ next.explanation }}</span>
+                                </div>
+                            } @else {
+                                <h2 class="text-2xl font-bold text-gray-800 mb-3">Final Round Complete!</h2>
+                                <div class="text-left text-sm">
+                                    <span class="text-gray-500">Great job! Time to cool down.</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="flex flex-col space-y-4">
+            <!-- Controls during Rest Period (Running) -->
+            @if (isWorkoutStarted() && !isWorkoutComplete() && !isPaused() && !isWorkPeriod()) {
+                <div class="flex space-x-4">
+                    <button (click)="goBack()" class="w-1/2 bg-gray-400 text-gray-900 py-3 rounded-xl font-bold text-lg hover:bg-gray-500 transition-colors shadow-md">
+                        Go Back
+                    </button>
+                    <button (click)="skipPhase('rest')" class="w-1/2 bg-pink-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-pink-700 transition-colors shadow-md">
+                        Skip Rest
+                    </button>
+                </div>
             }
 
             <!-- Navigation Controls (Visible only when Paused) - ROW LAYOUT -->
