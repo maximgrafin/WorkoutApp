@@ -238,3 +238,16 @@
         </div>
     </div>
 </div>
+@if (!isWorkoutStarted() || isWorkoutComplete()) {
+<footer class="fixed bottom-2 right-4 text-center text-xs text-gray-400">
+  <p>
+    Made with ❤️ by 
+    <a href="mailto:maximsadym@gmail.com" 
+       class="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors" 
+       target="_blank" 
+       rel="noopener noreferrer">
+      Maxim Sadym
+    </a>
+  </p>
+</footer>
+}

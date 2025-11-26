@@ -37,11 +37,11 @@ const INITIAL_EXERCISE_LIST: ExerciseData[] = [
     { nameKey: "hollowHold_name", explanationKey: "hollowHold_explanation", duration: 30, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHhqZG9qZTdvZnQ4aWV3MmRkbXhvZHY1eHN4dDZxcnNhbHlrOTdyNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9XbMdlJgKXXkEtC60Q/giphy.gif' },
     { nameKey: "flutterKicks_name", explanationKey: "flutterKicks_explanation", duration: 40, gifUrl: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMW1jcDJ0Y215Nm9lajRoNG4zNzdkeTRicG90dmZjZzFkczg0dWNrYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jbiA1NsHa50OS2MATH/giphy.gif' },
     { nameKey: "sidePlankRight_name", explanationKey: "sidePlankRight_explanation", duration: 30, gifUrl: 'https://i.imgur.com/tor7hei.jpeg' },
-    { nameKey: "sidePlankLeft_name", explanationKey: "sidePlankLeft_explanation", duration: 30, gifUrl: 'https://imgur.com/S8HxmGu.jpeg' },
+    { nameKey: "sidePlankLeft_name", explanationKey: "sidePlankLeft_explanation", duration: 30, gifUrl: 'https://i.imgur.com/S8HxmGu.jpeg' },
     // Finisher
     { nameKey: "mountainClimbers_name", explanationKey: "mountainClimbers_explanation", duration: 45, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2poMnN3ejBrNThzYzFzYWVxYTR5ajVsdnc5dWhpZDA2cTlwaXF4ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/D8PNyQTvanRe0/giphy.gif' },
     { nameKey: "russianTwist_name", explanationKey: "russianTwist_explanation", duration: 50, gifUrl: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGdzcXNncTByOTE2eXM4Z2o5MWkxYzV5ODA5aTNkYTQweXBsZTNsZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DfeEVAQlxq2oWfq5f5/giphy.gif' },
-    { nameKey: "plank_name", explanationKey: "plank_explanation", duration: 60, gifUrl: 'https://imgur.com/zL1nbr9.jpeg' },
+    { nameKey: "plank_name", explanationKey: "plank_explanation", duration: 60, gifUrl: 'https://i.imgur.com/zL1nbr9.jpeg' },
 ];
 
 const LIST_LENGTH = INITIAL_EXERCISE_LIST.length;
