@@ -1,0 +1,5 @@
+{
+  "name": "Angular Workout Timer",
+  "description": "An advanced interval workout timer for core and back exercises, built with Angular signals. Features a dynamic, shuffled exercise list, work/rest phases, and full playback controls (pause, resume, skip, go back).",
+  "requestFramePermissions": []
+}

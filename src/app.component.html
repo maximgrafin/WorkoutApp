@@ -1,0 +1,101 @@
+<div class="min-h-screen flex items-center justify-center p-4">
+    <!-- Main Workout Container -->
+    <div class="w-full max-w-lg bg-white shadow-2xl rounded-xl p-6 md:p-8 text-center">
+        
+        <h1 class="text-3xl font-extrabold text-indigo-700 mb-2">
+            {{ headerTitle() }}
+        </h1>
+        <p class="text-lg font-semibold mb-6 text-gray-600">
+            {{ statusMessage() }}
+        </p>
+
+        <!-- Timer Display -->
+        <div class="bg-indigo-100 rounded-lg p-4 mb-8">
+            <div class="text-7xl font-black text-indigo-800 tabular-nums">
+                {{ timerDisplay() }}
+            </div>
+            <p class="text-sm text-gray-500 mt-1">{{ roundInfo() }}</p>
+            <!-- Total Time Remaining Display -->
+            <p class="text-sm text-gray-500 mt-1 font-semibold">Total Time Left: {{ totalTimeRemainingDisplay() }}</p>
+        </div>
+
+        <!-- Exercise Details Card -->
+        @if (isWorkoutStarted()) {
+            <div class="border-2 rounded-xl p-4 transition-all duration-300 transform scale-100 mb-6"
+                 [class.border-indigo-600]="isWorkPeriod()"
+                 [class.bg-indigo-50]="isWorkPeriod()"
+                 [class.border-green-600]="!isWorkPeriod() && !isWorkoutComplete() && !isPaused()"
+                 [class.bg-green-50]="!isWorkPeriod() && !isWorkoutComplete() && !isPaused()">
+                
+                <h2 class="text-2xl font-bold text-gray-900 mb-3">{{ currentExercise()?.name }}</h2>
+                
+                <!-- Details -->
+                <div class="text-left text-sm space-y-2">
+                    <div>
+                        <span class="font-semibold text-indigo-600">Muscles:</span> 
+                        <span class="text-gray-700">{{ currentExercise()?.muscles }}</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-indigo-600">Movement:</span> 
+                        <span class="text-gray-700">{{ currentExercise()?.explanation }}</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Controls -->
+        <div class="flex flex-col space-y-4">
+            <!-- Start Button (Visible only when not started or completed) -->
+            @if (!isWorkoutStarted() || isWorkoutComplete()) {
+                <button (click)="startWorkout()" 
+                        class="bg-indigo-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-colors shadow-md">
+                    {{ isWorkoutComplete() ? 'Start Over' : 'Start Workout' }}
+                </button>
+            }
+
+            <!-- Skip Rest Button (Visible when Running during Rest Period) -->
+            @if (isWorkoutStarted() && !isWorkoutComplete() && !isPaused() && !isWorkPeriod()) {
+                <button (click)="skipPhase('rest')" class="bg-pink-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-pink-700 transition-colors shadow-md">
+                    Skip Rest ({{ formatTime(timeLeft()) }})
+                </button>
+            }
+
+            <!-- Navigation Controls (Visible only when Paused) - ROW LAYOUT -->
+            @if (isWorkoutStarted() && !isWorkoutComplete() && isPaused()) {
+                <div class="flex space-x-4">
+                    <!-- Go Back Button (Always visible when paused) -->
+                    <button (click)="goBack()" class="w-1/2 bg-gray-400 text-gray-900 py-3 rounded-xl font-bold text-lg hover:bg-gray-500 transition-colors shadow-md">
+                        Go Back
+                    </button>
+                    
+                    <!-- Dynamic Skip Button (Takes up remaining 1/2 width) -->
+                    @if (isWorkPeriod()) {
+                        <button (click)="skipPhase('work')" class="w-1/2 bg-red-500 text-white py-3 rounded-xl font-bold text-lg hover:bg-red-600 transition-colors shadow-md">
+                            Skip Exercise
+                        </button>
+                    }
+                    
+                    @if (!isWorkPeriod()) {
+                        <button (click)="skipPhase('rest')" class="w-1/2 bg-pink-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-pink-700 transition-colors shadow-md">
+                            Skip Rest
+                        </button>
+                    }
+                </div>
+            }
+
+            <!-- Pause/Resume Button (Visible while running/paused) - LARGER AND AT THE BOTTOM -->
+            @if (isWorkoutStarted() && !isWorkoutComplete()) {
+                <button (click)="pauseResume()" 
+                        class="py-8 rounded-xl font-black text-4xl transition-colors shadow-md"
+                        [class.bg-yellow-500]="!isPaused()"
+                        [class.hover:bg-yellow-600]="!isPaused()"
+                        [class.text-gray-800]="!isPaused()"
+                        [class.bg-green-500]="isPaused()"
+                        [class.hover:bg-green-600]="isPaused()"
+                        [class.text-white]="isPaused()">
+                    {{ pauseButtonText() }}
+                </button>
+            }
+        </div>
+    </div>
+</div>
