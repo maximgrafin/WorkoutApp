@@ -1,16 +1,19 @@
-const CACHE_NAME = 'workout-timer-cache-v1';
+const CACHE_NAME = 'workout-timer-cache-v2';
 const URLS_TO_CACHE = [
   '/',
   '/index.html',
+  '/manifest.webmanifest',
   '/index.tsx',
   '/metadata.json',
-  '/favicon.ico',
+  '/favicon.svg',
   '/src/app.component.ts',
   '/src/app.component.html',
   '/src/sound.service.ts',
   // External resources
   'https://cdn.tailwindcss.com',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap'
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap',
+  'https://www.gstatic.com/images/branding/product/1x/fitness_192dp.png',
+  'https://ssl.gstatic.com/images/branding/product/1x/fitness_512dp.png'
 ];
 
 self.addEventListener('install', event => {
