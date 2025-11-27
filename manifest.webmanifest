@@ -1,0 +1,20 @@
+{
+  "name": "Workout Timer",
+  "short_name": "Workout",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "A simple workout timer app.",
+  "icons": [
+    {
+      "src": "https://www.gstatic.com/images/branding/product/1x/fitness_192dp.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https.gstatic.com/images/branding/product/1x/fitness_512dp.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
