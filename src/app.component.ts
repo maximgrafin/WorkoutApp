@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, computed, inject, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, computed, inject, effect, OnDestroy } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { SoundService } from './sound.service';
 import { LanguageService, languages } from './language.service';
@@ -355,7 +355,7 @@ function formatTime(seconds: number): string {
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgOptimizedImage],
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
     public readonly soundService = inject(SoundService);
     public readonly languageService = inject(LanguageService);
     public readonly dictionary = this.languageService.dictionary;
@@ -380,6 +380,7 @@ export class AppComponent {
     // --- Internal Timer Management ---
     private timerId: any = null;
     private pauseTimerId: any = null;
+    private wakeLockSentinel: WakeLockSentinel | null = null;
 
     constructor() {
         // Effect to save settings to localStorage whenever they change.
@@ -389,6 +390,21 @@ export class AppComponent {
                 localStorage.setItem(LOCAL_STORAGE_KEY_DURATION_MULTIPLIER, this.durationMultiplier().toString());
             }
         });
+
+        // Add visibility change listener to re-acquire wake lock
+        if (typeof document !== 'undefined') {
+            document.addEventListener('visibilitychange', this.handleVisibilityChange);
+        }
+    }
+
+    ngOnDestroy() {
+        // Clean up listener and release wake lock
+        if (typeof document !== 'undefined') {
+            document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+        }
+        this.releaseWakeLock();
+        clearTimeout(this.timerId);
+        clearInterval(this.pauseTimerId);
     }
 
     // --- Computed Signals (Derived State) ---
@@ -489,6 +505,40 @@ export class AppComponent {
         return formatTime(seconds);
     }
 
+    // --- Wake Lock Management ---
+    private handleVisibilityChange = async () => {
+        if (document.visibilityState === 'visible' && this.isWorkoutStarted() && !this.isPaused() && !this.isWorkoutComplete()) {
+            await this.requestWakeLock();
+        }
+    }
+
+    private async requestWakeLock() {
+        if ('wakeLock' in navigator) {
+            try {
+                this.wakeLockSentinel = await navigator.wakeLock.request('screen');
+                console.log('Screen Wake Lock is active.');
+                this.wakeLockSentinel.addEventListener('release', () => {
+                    console.log('Screen Wake Lock was released by the browser.');
+                    // This is important! Update our state when the lock is released externally
+                    this.wakeLockSentinel = null;
+                });
+            } catch (err: any) {
+                console.error(`Wake Lock request failed: ${err.name}, ${err.message}`);
+                this.wakeLockSentinel = null; // Ensure it's null on failure
+            }
+        } else {
+            console.log('Wake Lock API not supported.');
+        }
+    }
+
+    private async releaseWakeLock() {
+        if (this.wakeLockSentinel) {
+            await this.wakeLockSentinel.release();
+            this.wakeLockSentinel = null;
+            console.log('Screen Wake Lock released.');
+        }
+    }
+
     // --- Logic Methods ---
 
     onRestDurationChange(event: Event) {
@@ -554,13 +604,14 @@ export class AppComponent {
         this.pauseTimeTracker.update(p => p + 1);
     }
 
-    private runStep() {
+    private async runStep() {
         clearTimeout(this.timerId);
 
         if (this.currentPhaseIndex() >= LAST_PHASE) {
             this.isWorkoutComplete.set(true);
             this.isWorkoutStarted.set(false);
             this.timeLeft.set(0);
+            await this.releaseWakeLock();
             return;
         }
 
@@ -574,7 +625,7 @@ export class AppComponent {
         this.timerId = setTimeout(this.tick, 1000);
     }
 
-    startWorkout() {
+    async startWorkout() {
         this.soundService.unlockAudio();
         this.soundService.playStartBeep();
         this.currentPhaseIndex.set(0);
@@ -589,11 +640,10 @@ export class AppComponent {
         clearInterval(this.pauseTimerId);
 
         this.runStep();
+        await this.requestWakeLock();
     }
 
-
-
-    pauseResume() {
+    async pauseResume() {
         this.soundService.unlockAudio();
         this.isPaused.update(p => !p);
 
@@ -601,15 +651,17 @@ export class AppComponent {
             this.soundService.playPauseBeep();
             clearTimeout(this.timerId);
             this.pauseTimerId = setInterval(this.tickPause, 1000);
+            await this.releaseWakeLock();
         } else {
             this.soundService.playResumeBeep();
             clearInterval(this.pauseTimerId);
             this.pauseTimeTracker.set(0);
             this.runStep();
+            await this.requestWakeLock();
         }
     }
 
-    skipPhase(type: 'work' | 'rest') {
+    async skipPhase(type: 'work' | 'rest') {
         if (type === 'work') {
             this.soundService.playEndBeep();
         } else {
@@ -625,9 +677,10 @@ export class AppComponent {
         this.pauseTimeTracker.set(0);
 
         this.runStep();
+        await this.requestWakeLock();
     }
 
-    goBack() {
+    async goBack() {
         this.soundService.unlockAudio();
         this.soundService.playStartBeep();
 
@@ -653,5 +706,6 @@ export class AppComponent {
         this.pauseTimeTracker.set(0);
 
         this.runStep();
+        await this.requestWakeLock();
     }
 }
