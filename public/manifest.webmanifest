@@ -1,7 +1,7 @@
 {
   "name": "Workout Timer",
   "short_name": "Workout",
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fff",
   "description": "A simple workout timer app.",
