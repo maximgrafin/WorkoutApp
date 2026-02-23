@@ -25,7 +25,8 @@ interface DisplayExercise {
 const INITIAL_EXERCISE_LIST: ExerciseData[] = [
     // Warm-Up & Activation
     { nameKey: "catCow_name", explanationKey: "catCow_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzU3OXl3cTczYmd3bWFyZ29md3l6MmVwb2VnaWM1ODRzazNidDhvMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JdtyfG3ZSE8iOlDs64/giphy.gif' },
-    { nameKey: "birdDog_name", explanationKey: "birdDog_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXRiZmxqNTM4OGY5bmswZXp0MnJzMWdnNGRvMW9nM21kcWpsZjd6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Nwx7Grs4AOlkTba/giphy.gif' },
+    { nameKey: "birdDogLeft_name", explanationKey: "birdDogLeft_explanation", duration: 20, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXRiZmxqNTM4OGY5bmswZXp0MnJzMWdnNGRvMW9nM21kcWpsZjd6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Nwx7Grs4AOlkTba/giphy.gif' },
+    { nameKey: "birdDogRight_name", explanationKey: "birdDogRight_explanation", duration: 20, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXRiZmxqNTM4OGY5bmswZXp0MnJzMWdnNGRvMW9nM21kcWpsZjd6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Nwx7Grs4AOlkTba/giphy.gif' },
     // Full-Body Strength
     { nameKey: "bodyweightSquats_name", explanationKey: "bodyweightSquats_explanation", duration: 45, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWFlbGRwODE1b2tnMHNla3B1dnQ1YWx2c2pwdWM5dzZnbmtnNXl2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RTNDA7OxcwuOMcCPhL/giphy.gif' },
     { nameKey: "pushUps_name", explanationKey: "pushUps_explanation", duration: 40, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHA3Zm02OXp1c3Bjb2hpeGU5MXpreWlzbWV1MWdldjVrNHRiazM3cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0GqzRhOgrnKoTlCM/giphy.gif' },
@@ -102,40 +103,46 @@ function formatTime(seconds: number): string {
     <!-- Main Workout Container -->
     <div class="relative w-full max-w-lg bg-white shadow-2xl rounded-xl p-6 md:p-8 text-center flex flex-col min-h-[38rem]">
         
-        <!-- Mute/Unmute Button -->
-        <button (click)="soundService.toggleMute()" 
-                class="absolute top-4 left-4 p-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors z-10">
-            <span class="sr-only">{{ soundService.isMuted() ? dictionary()['unmute'] : dictionary()['mute'] }}</span>
-            @if (soundService.isMuted()) {
-                <!-- Muted Icon (Volume Off) -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l-4-4m0 4l4-4" />
-                </svg>
-            } @else {
-                <!-- Unmuted Icon (Volume Up) -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                </svg>
-            }
-        </button>
-
-        @if (!isWorkoutStarted() || isWorkoutComplete()) {
-            <!-- Language Switcher -->
-            <div class="absolute top-4 right-4 flex items-center space-x-1 text-gray-500 z-10">
-                @for (lang of languages; track lang.code; let isFirst = $first) {
-                    @if (!isFirst) {
-                        <div class="w-px h-4 bg-gray-300"></div>
-                    }
-                    <button (click)="languageService.setLanguage(lang.code)" 
-                            class="px-2 py-1 rounded-md hover:bg-gray-200 transition-colors text-sm"
-                            [class.text-indigo-600]="languageService.language() === lang.code"
-                            [class.font-bold]="languageService.language() === lang.code">
-                        {{ lang.name }}
-                    </button>
+        <!-- Header Controls (Sound & Language) -->
+        <div class="flex justify-between items-center w-full mb-4 z-10 relative">
+            <!-- Mute/Unmute Button -->
+            <button (click)="soundService.toggleMute()" 
+                    class="p-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                <span class="sr-only">{{ soundService.isMuted() ? dictionary()['unmute'] : dictionary()['mute'] }}</span>
+                @if (soundService.isMuted()) {
+                    <!-- Muted Icon (Volume Off) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l-4-4m0 4l4-4" />
+                    </svg>
+                } @else {
+                    <!-- Unmuted Icon (Volume Up) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
                 }
-            </div>
-        }
+            </button>
+
+            @if (!isWorkoutStarted() || isWorkoutComplete()) {
+                <!-- Language Switcher -->
+                <div class="flex items-center space-x-1 text-gray-500">
+                    @for (lang of languages; track lang.code; let isFirst = $first) {
+                        @if (!isFirst) {
+                            <div class="w-px h-4 bg-gray-300"></div>
+                        }
+                        <button (click)="languageService.setLanguage(lang.code)" 
+                                class="px-2 py-1 rounded-md hover:bg-gray-200 transition-colors text-sm"
+                                [class.text-indigo-600]="languageService.language() === lang.code"
+                                [class.font-bold]="languageService.language() === lang.code">
+                            {{ lang.name }}
+                        </button>
+                    }
+                </div>
+            } @else {
+                <!-- Spacer to balance flex layout when language switcher is hidden -->
+                <div class="w-10"></div>
+            }
+        </div>
 
         <!-- HEADER -->
         <div>
@@ -310,7 +317,7 @@ function formatTime(seconds: number): string {
 
                     <!-- Resume Button -->
                     <button (click)="pauseResume()"
-                            class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl font-bold text-lg transition-colors shadow-md">
+                            class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-6 rounded-xl font-bold text-2xl tracking-wider transition-colors shadow-md">
                         {{ pauseButtonText() }}
                     </button>
 
@@ -319,16 +326,16 @@ function formatTime(seconds: number): string {
                     @if (isWorkPeriod()) {
                         <!-- Running during Work Period: Just Pause -->
                         <button (click)="pauseResume()"
-                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-lg transition-colors shadow-md">
+                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-6 rounded-xl font-bold text-2xl tracking-wider transition-colors shadow-md">
                             {{ pauseButtonText() }}
                         </button>
                     } @else {
                         <!-- Running during Rest Period: Pause and Skip Rest -->
                         <div class="flex flex-col space-y-4">
-                            <button (click)="skipPhase('rest')" class="w-full bg-pink-600 text-white py-2 rounded-lg font-semibold text-sm hover:bg-pink-700 transition-colors shadow">
+                            <button (click)="skipPhase('rest')" class="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-pink-700 transition-colors shadow">
                                 {{ dictionary()['skipRest'] }}
                             </button>
-                            <button (click)="pauseResume()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-lg transition-colors shadow-md">
+                            <button (click)="pauseResume()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-6 rounded-xl font-bold text-2xl tracking-wider transition-colors shadow-md">
                                 {{ pauseButtonText() }}
                             </button>
                         </div>
