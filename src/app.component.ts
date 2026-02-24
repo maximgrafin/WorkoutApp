@@ -104,26 +104,26 @@ function formatTime(seconds: number): string {
     <div class="relative w-full max-w-lg bg-white shadow-2xl rounded-xl p-6 md:p-8 text-center flex flex-col min-h-[38rem]">
         
         <!-- Header Controls (Sound & Language) -->
-        <div class="flex justify-between items-center w-full mb-4 z-10 relative">
-            <!-- Mute/Unmute Button -->
-            <button (click)="soundService.toggleMute()" 
-                    class="p-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                <span class="sr-only">{{ soundService.isMuted() ? dictionary()['unmute'] : dictionary()['mute'] }}</span>
-                @if (soundService.isMuted()) {
-                    <!-- Muted Icon (Volume Off) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l-4-4m0 4l4-4" />
-                    </svg>
-                } @else {
-                    <!-- Unmuted Icon (Volume Up) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                    </svg>
-                }
-            </button>
+        @if (!isWorkoutStarted() || isWorkoutComplete()) {
+            <div class="flex justify-between items-center w-full mb-4 z-10 relative">
+                <!-- Mute/Unmute Button -->
+                <button (click)="soundService.toggleMute()" 
+                        class="p-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                    <span class="sr-only">{{ soundService.isMuted() ? dictionary()['unmute'] : dictionary()['mute'] }}</span>
+                    @if (soundService.isMuted()) {
+                        <!-- Muted Icon (Volume Off) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l-4-4m0 4l4-4" />
+                        </svg>
+                    } @else {
+                        <!-- Unmuted Icon (Volume Up) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                    }
+                </button>
 
-            @if (!isWorkoutStarted() || isWorkoutComplete()) {
                 <!-- Language Switcher -->
                 <div class="flex items-center space-x-1 text-gray-500">
                     @for (lang of languages; track lang.code; let isFirst = $first) {
@@ -138,11 +138,8 @@ function formatTime(seconds: number): string {
                         </button>
                     }
                 </div>
-            } @else {
-                <!-- Spacer to balance flex layout when language switcher is hidden -->
-                <div class="w-10"></div>
-            }
-        </div>
+            </div>
+        }
 
         <!-- HEADER -->
         <div>
