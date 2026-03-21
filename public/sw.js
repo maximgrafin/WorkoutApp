@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workout-timer-cache-v11';
+const CACHE_NAME = 'workout-timer-cache-v12';
 const URLS_TO_CACHE = [
   './',
   'index.html',
@@ -13,8 +13,8 @@ const URLS_TO_CACHE = [
   // External resources
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap',
-  'https://www.gstatic.com/images/branding/product/1x/fitness_192dp.png',
-  'https://ssl.gstatic.com/images/branding/product/1x/fitness_512dp.png',
+  'icon-192.png',
+  'icon-512.png',
   // JS dependencies from importmap
   'https://aistudiocdn.com/rxjs@^7.8.2?conditions=es2015',
   'https://aistudiocdn.com/rxjs@^7.8.2/operators?conditions=es2015',
