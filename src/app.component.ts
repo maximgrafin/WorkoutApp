@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, computed, inject, effect, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, computed, inject, effect, OnDestroy, HostListener } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { SoundService } from './sound.service';
 import { LanguageService, languages } from './language.service';
@@ -108,6 +108,14 @@ function formatTime(seconds: number): string {
     selector: 'app-root',
     template: `
 <div class="min-h-screen flex items-center justify-center p-4">
+    @if (updateAvailable()) {
+        <div class="fixed top-0 left-0 right-0 bg-indigo-600 text-white p-3 text-center z-50 flex justify-center items-center space-x-4 shadow-md">
+            <span class="font-semibold">{{ dictionary()['updateAvailable'] }}</span>
+            <button (click)="applyUpdate()" class="bg-white text-indigo-600 px-4 py-1 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors">
+                {{ dictionary()['applyUpdate'] }}
+            </button>
+        </div>
+    }
     <!-- Main Workout Container -->
     <div class="relative w-full max-w-lg bg-white shadow-2xl rounded-xl p-6 md:p-8 text-center flex flex-col min-h-[38rem]">
         
@@ -401,6 +409,22 @@ export class AppComponent implements OnDestroy {
     public readonly languages = languages;
 
     private voices: SpeechSynthesisVoice[] = [];
+
+    // --- Service Worker Update State ---
+    updateAvailable = signal(false);
+    private waitingWorker: ServiceWorker | null = null;
+
+    @HostListener('window:sw-update-available', ['$event'])
+    onSwUpdateAvailable(event: CustomEvent<ServiceWorker>) {
+        this.waitingWorker = event.detail;
+        this.updateAvailable.set(true);
+    }
+
+    applyUpdate() {
+        if (this.waitingWorker) {
+            this.waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+        }
+    }
 
     // --- State Signals ---
     workoutMode = signal<'base' | 'advanced'>('base');

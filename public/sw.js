@@ -53,11 +53,20 @@ self.addEventListener('install', event => {
         console.log('Service Worker: Caching app shell and assets');
         return cache.addAll(URLS_TO_CACHE);
       })
-      .then(() => self.skipWaiting()) // Activate the new service worker immediately
+      .then(() => {
+        console.log('Service Worker: Installation complete (waiting for activation)');
+      })
       .catch(error => {
         console.error('Service Worker: Failed to cache resources during install:', error);
       })
   );
+});
+
+// Listen for a message from the client to force activation
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // On activate, clean up old caches

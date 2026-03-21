@@ -46,6 +46,8 @@ const dictionaries: Record<Language, any> = {
     clickStart: "Adjust settings below, then press Start when you're ready.",
     workoutComplete: 'Workout Complete!',
     workoutCompleteMessage: 'Great Job! You have completed your workout.',
+    updateAvailable: 'A new version is available!',
+    applyUpdate: 'Update Now',
     exercises: {
       catCow_name: "Cat Cow",
       catCow_explanation: "Start on all fours. Inhale as you drop your belly and look up (Cow). Exhale as you round your spine and tuck your chin (Cat).",
@@ -124,6 +126,8 @@ const dictionaries: Record<Language, any> = {
     clickStart: 'Настройте параметры ниже, затем нажмите Старт, когда будете готовы.',
     workoutComplete: 'Тренировка завершена!',
     workoutCompleteMessage: 'Отличная работа! Тренировка завершена.',
+    updateAvailable: 'Доступна новая версия!',
+    applyUpdate: 'Обновить сейчас',
     exercises: {
       catCow_name: "Кошка-Корова",
       catCow_explanation: "Начните на четвереньках. Вдохните, прогибая спину и поднимая голову (Корова). Выдохните, округляя спину и прижимая подбородок к груди (Кошка).",
@@ -202,6 +206,8 @@ const dictionaries: Record<Language, any> = {
     clickStart: 'Passen Sie die Einstellungen unten an und drücken Sie dann Start, wenn Sie bereit sind.',
     workoutComplete: 'Training abgeschlossen!',
     workoutCompleteMessage: 'Gut gemacht! Du hast dein Training abgeschlossen.',
+    updateAvailable: 'Eine neue Version ist verfügbar!',
+    applyUpdate: 'Jetzt aktualisieren',
     exercises: {
       catCow_name: "Katze-Kuh",
       catCow_explanation: "Beginnen Sie im Vierfüßlerstand. Atmen Sie ein, während Sie den Bauch senken und nach oben schauen (Kuh). Atmen Sie aus, während Sie den Rücken runden und das Kinn zur Brust ziehen (Katze).",
@@ -280,6 +286,8 @@ const dictionaries: Record<Language, any> = {
     clickStart: 'Ajusta la configuración a continuación y presiona Empezar cuando estés listo.',
     workoutComplete: '¡Entrenamiento completado!',
     workoutCompleteMessage: '¡Buen trabajo! Has completado tu entrenamiento.',
+    updateAvailable: '¡Una nueva versión está disponible!',
+    applyUpdate: 'Actualizar ahora',
     exercises: {
       catCow_name: "Gato-Vaca",
       catCow_explanation: "Comienza a cuatro patas. Inhala mientras bajas el abdomen y miras hacia arriba (Vaca). Exhala mientras redondeas la columna y metes la barbilla (Gato).",
@@ -358,6 +366,8 @@ const dictionaries: Record<Language, any> = {
     clickStart: 'Налаштуйте параметри нижче, а потім натисніть Старт, коли будете готові.',
     workoutComplete: 'Тренування завершено!',
     workoutCompleteMessage: 'Відмінна робота! Тренування завершено.',
+    updateAvailable: 'Доступна нова версія!',
+    applyUpdate: 'Оновити зараз',
     exercises: {
       catCow_name: "Кішка-Корова",
       catCow_explanation: "Почніть навкарачки. Вдихніть, прогинаючи спину і дивлячись вгору (Корова). Видихніть, округлюючи спину і притискаючи підборіддя до грудей (Кішка).",

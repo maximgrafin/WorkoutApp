@@ -14,10 +14,31 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
       .then(registration => {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // New service worker is installed but waiting. Let the app know.
+                window.dispatchEvent(new CustomEvent('sw-update-available', { detail: newWorker }));
+              }
+            });
+          }
+        });
       })
       .catch(err => {
         console.log('ServiceWorker registration failed: ', err);
       });
+
+    // Handle the controllerchange event to reload the page when the new worker takes over
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        window.location.reload();
+        refreshing = true;
+      }
+    });
   });
 }
 
