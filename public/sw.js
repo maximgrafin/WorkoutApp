@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workout-timer-cache-v10';
+const CACHE_NAME = 'workout-timer-cache-v11';
 const URLS_TO_CACHE = [
   './',
   'index.html',

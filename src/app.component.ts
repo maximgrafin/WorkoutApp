@@ -435,7 +435,7 @@ export class AppComponent implements OnDestroy {
     }
 
     // --- PWA Installation State ---
-    canInstall = signal(false);
+    canInstall = signal(true);
     private deferredInstallPrompt: any = null;
 
     @HostListener('window:beforeinstallprompt', ['$event'])
@@ -444,12 +444,13 @@ export class AppComponent implements OnDestroy {
         event.preventDefault();
         // Stash the event so it can be triggered later.
         this.deferredInstallPrompt = event;
-        // Update UI notify the user they can install the PWA
-        this.canInstall.set(true);
     }
 
     async installApp() {
-        if (!this.deferredInstallPrompt) return;
+        if (!this.deferredInstallPrompt) {
+            alert('To install the app, please use your browser menu: tap the Share button (iOS) or the 3-dots menu (Android), and select "Add to Home Screen" or "Install App".');
+            return;
+        }
         // Show the install prompt
         this.deferredInstallPrompt.prompt();
         // Wait for the user to respond to the prompt
@@ -457,7 +458,6 @@ export class AppComponent implements OnDestroy {
         console.log(`User response to the install prompt: ${outcome}`);
         // We've used the prompt, and can't use it again, throw it away
         this.deferredInstallPrompt = null;
-        this.canInstall.set(false);
     }
 
     // --- State Signals ---
