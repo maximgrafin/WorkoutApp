@@ -4,8 +4,8 @@ import { SoundService } from './sound.service';
 import { LanguageService, languages } from './language.service';
 
 // --- Configuration Constants ---
-const LOCAL_STORAGE_KEY_REST_DURATION = 'workout-timer-rest-duration';
-const LOCAL_STORAGE_KEY_DURATION_MULTIPLIER = 'workout-timer-duration-multiplier';
+const getRestDurationKey = (mode: string) => `workout-timer-rest-duration-${mode}`;
+const getDurationMultiplierKey = (mode: string) => `workout-timer-duration-multiplier-${mode}`;
 
 interface ExerciseData {
     nameKey: string;
@@ -22,45 +22,63 @@ interface DisplayExercise {
 }
 
 // Define the initial list of exercises with individual durations.
-const INITIAL_EXERCISE_LIST: ExerciseData[] = [
-    // Warm-Up & Activation
-    { nameKey: "catCow_name", explanationKey: "catCow_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzU3OXl3cTczYmd3bWFyZ29md3l6MmVwb2VnaWM1ODRzazNidDhvMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JdtyfG3ZSE8iOlDs64/giphy.gif' },
-    { nameKey: "birdDogLeft_name", explanationKey: "birdDogLeft_explanation", duration: 20, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXRiZmxqNTM4OGY5bmswZXp0MnJzMWdnNGRvMW9nM21kcWpsZjd6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Nwx7Grs4AOlkTba/giphy.gif' },
-    { nameKey: "birdDogRight_name", explanationKey: "birdDogRight_explanation", duration: 20, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXRiZmxqNTM4OGY5bmswZXp0MnJzMWdnNGRvMW9nM21kcWpsZjd6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Nwx7Grs4AOlkTba/giphy.gif' },
-    // Full-Body Strength
-    { nameKey: "bodyweightSquats_name", explanationKey: "bodyweightSquats_explanation", duration: 45, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWFlbGRwODE1b2tnMHNla3B1dnQ1YWx2c2pwdWM5dzZnbmtnNXl2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RTNDA7OxcwuOMcCPhL/giphy.gif' },
+const BASE_EXERCISE_LIST: ExerciseData[] = [
+    { nameKey: "catCow_name", explanationKey: "catCow_explanation", duration: 60, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzU3OXl3cTczYmd3bWFyZ29md3l6MmVwb2VnaWM1ODRzazNidDhvMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JdtyfG3ZSE8iOlDs64/giphy.gif' },
+    { nameKey: "birdDogLeft_name", explanationKey: "birdDogLeft_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXRiZmxqNTM4OGY5bmswZXp0MnJzMWdnNGRvMW9nM21kcWpsZjd6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Nwx7Grs4AOlkTba/giphy.gif' },
+    { nameKey: "birdDogRight_name", explanationKey: "birdDogRight_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXRiZmxqNTM4OGY5bmswZXp0MnJzMWdnNGRvMW9nM21kcWpsZjd6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Nwx7Grs4AOlkTba/giphy.gif' },
+    { nameKey: "cossackSquats_name", explanationKey: "cossackSquats_explanation", duration: 60, gifUrl: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHd2enk1eGQ2OTd4bWR0MnVzMXpzdXViMTdrNGIwYWZzNWk0MDFocyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/SiKqOc1nzHEAC4d5fX/giphy.gif' },
+    { nameKey: "quadStretchLeft_name", explanationKey: "quadStretchLeft_explanation", duration: 45, gifUrl: 'https://sportydoctor.com/wp-content/uploads/Standing-Quad-1.gif' },
+    { nameKey: "quadStretchRight_name", explanationKey: "quadStretchRight_explanation", duration: 45, gifUrl: 'https://sportydoctor.com/wp-content/uploads/Standing-Quad-1.gif' },
+    { nameKey: "wallCalfStretchLeft_name", explanationKey: "wallCalfStretchLeft_explanation", duration: 60, gifUrl: 'https://sportydoctor.com/wp-content/uploads/Wall-Calf-Stretch.gif' },
+    { nameKey: "wallCalfStretchRight_name", explanationKey: "wallCalfStretchRight_explanation", duration: 60, gifUrl: 'https://sportydoctor.com/wp-content/uploads/Wall-Calf-Stretch.gif' },
+    { nameKey: "shortFootLeft_name", explanationKey: "shortFootLeft_explanation", duration: 60, gifUrl: 'https://cdn.shopify.com/s/files/1/1402/4425/files/Short_foot_1024x1024.gif?v=1618891237' },
+    { nameKey: "shortFootRight_name", explanationKey: "shortFootRight_explanation", duration: 60, gifUrl: 'https://cdn.shopify.com/s/files/1/1402/4425/files/Short_foot_1024x1024.gif?v=1618891237' },
+    { nameKey: "ywRaises_name", explanationKey: "ywRaises_explanation", duration: 60, gifUrl: 'https://i.makeagif.com/media/5-08-2025/5hrukN.gif' },
     { nameKey: "pushUps_name", explanationKey: "pushUps_explanation", duration: 40, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHA3Zm02OXp1c3Bjb2hpeGU5MXpreWlzbWV1MWdldjVrNHRiazM3cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0GqzRhOgrnKoTlCM/giphy.gif' },
-    { nameKey: "gluteBridge_name", explanationKey: "gluteBridge_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnozYWhwY2FnYmExYTZvMnF2dWt3bHh0eXR6aGZrdWF4ZTR1dnFuOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/krmA7YIhRvwjJYbmrG/giphy.gif' },
-    { nameKey: "superman_name", explanationKey: "superman_explanation", duration: 40, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXRlbDU5dDdwaHNjenZ6c3E1OTEwMXozZmFrYmhjaDlydDMwNG5nMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hNng9AOyUHxvPiCUiv/giphy.gif' },
-    // Core Conditioning Circuit
-    { nameKey: "bicycleCrunches_name", explanationKey: "bicycleCrunches_explanation", duration: 50, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXhuNHRlNHJweTU2amwxbGF0dmI4bjJtbmV4ODJiNGJvazB3ZjI3bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TMNCtgJGJnV8k/giphy.gif' },
-    { nameKey: "reverseCrunch_name", explanationKey: "reverseCrunch_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWtuaGdmNzBnazY2b3k3ZzF3Yzh4cGxjY2t6NG1zaWRvZHUxa3ZreCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/chMEggxfebYTvHkNNG/giphy.gif' },
-    { nameKey: "hollowHold_name", explanationKey: "hollowHold_explanation", duration: 30, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHhqZG9qZTdvZnQ4aWV3MmRkbXhvZHY1eHN4dDZxcnNhbHlrOTdyNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9XbMdlJgKXXkEtC60Q/giphy.gif' },
-    { nameKey: "flutterKicks_name", explanationKey: "flutterKicks_explanation", duration: 40, gifUrl: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMW1jcDJ0Y215Nm9lajRoNG4zNzdkeTRicG90dmZjZzFkczg0dWNrYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jbiA1NsHa50OS2MATH/giphy.gif' },
-    { nameKey: "sidePlankRight_name", explanationKey: "sidePlankRight_explanation", duration: 30, gifUrl: 'https://i.imgur.com/tor7hei.jpeg' },
-    { nameKey: "sidePlankLeft_name", explanationKey: "sidePlankLeft_explanation", duration: 30, gifUrl: 'https://i.imgur.com/S8HxmGu.jpeg' },
-    // Finisher
-    { nameKey: "mountainClimbers_name", explanationKey: "mountainClimbers_explanation", duration: 45, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2poMnN3ejBrNThzYzFzYWVxYTR5ajVsdnc5dWhpZDA2cTlwaXF4ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/D8PNyQTvanRe0/giphy.gif' },
-    { nameKey: "russianTwist_name", explanationKey: "russianTwist_explanation", duration: 50, gifUrl: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGdzcXNncTByOTE2eXM4Z2o5MWkxYzV5ODA5aTNkYTQweXBsZTNsZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DfeEVAQlxq2oWfq5f5/giphy.gif' },
     { nameKey: "plank_name", explanationKey: "plank_explanation", duration: 60, gifUrl: 'https://i.imgur.com/zL1nbr9.jpeg' },
 ];
 
-const LIST_LENGTH = INITIAL_EXERCISE_LIST.length;
-const TOTAL_WORK_PHASES = LIST_LENGTH;
-const TOTAL_REST_PHASES = LIST_LENGTH - 1;
-const LAST_PHASE = (TOTAL_WORK_PHASES * 2) - 1;
+const ADVANCED_EXERCISE_LIST: ExerciseData[] = [
+    { nameKey: "sidePlankRight_name", explanationKey: "sidePlankRight_explanation", duration: 30, gifUrl: 'https://i.imgur.com/tor7hei.jpeg' },
+    { nameKey: "sidePlankLeft_name", explanationKey: "sidePlankLeft_explanation", duration: 30, gifUrl: 'https://i.imgur.com/S8HxmGu.jpeg' },
+    { nameKey: "singleLegGluteBridgeLeft_name", explanationKey: "singleLegGluteBridgeLeft_explanation", duration: 90, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjQ0MDl3YXNueHgwbWpsdG1tb3MwN28xYnNmbHZwbW0yY2w5MjNueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SJWtWnRFsTiNVSECVP/giphy.gif' },
+    { nameKey: "singleLegGluteBridgeRight_name", explanationKey: "singleLegGluteBridgeRight_explanation", duration: 90, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjQ0MDl3YXNueHgwbWpsdG1tb3MwN28xYnNmbHZwbW0yY2w5MjNueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SJWtWnRFsTiNVSECVP/giphy.gif' },
+    { nameKey: "eccentricCalfRaiseLeft_name", explanationKey: "eccentricCalfRaiseLeft_explanation", duration: 90, gifUrl: 'https://www.runnersworld.co.za/wp-content/uploads/2025/10/eccentric-single-leg-calf-raise-calf-stretching-0028-652ef00e9074b.gif'},
+    { nameKey: "eccentricCalfRaiseRight_name", explanationKey: "eccentricCalfRaiseRight_explanation", duration: 90, gifUrl: 'https://www.runnersworld.co.za/wp-content/uploads/2025/10/eccentric-single-leg-calf-raise-calf-stretching-0028-652ef00e9074b.gif'},
+    { nameKey: "pushUps_name", explanationKey: "pushUps_explanation", duration: 40, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHA3Zm02OXp1c3Bjb2hpeGU5MXpreWlzbWV1MWdldjVrNHRiazM3cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0GqzRhOgrnKoTlCM/giphy.gif' },
+    { nameKey: "plank_name", explanationKey: "plank_explanation", duration: 60, gifUrl: 'https://i.imgur.com/zL1nbr9.jpeg' },
+    { nameKey: "activeHang_name", explanationKey: "activeHang_explanation", duration: 60 , gifUrl: 'https://www.nourishmovelove.com/wp-content/uploads/2024/12/2-active-hang-on-the-bar.gif'},
+    { nameKey: "negativePullups_name", explanationKey: "negativePullups_explanation", duration: 180 , gifUrl: 'https://www.powrpersonaltraining.com/wp-content/uploads/2025/09/Negative-Pull-Ups-Exercise-Demo.gif'},
+
+    // { nameKey: "bodyweightSquats_name", explanationKey: "bodyweightSquats_explanation", duration: 45, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWFlbGRwODE1b2tnMHNla3B1dnQ1YWx2c2pwdWM5dzZnbmtnNXl2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RTNDA7OxcwuOMcCPhL/giphy.gif' },
+    // { nameKey: "gluteBridge_name", explanationKey: "gluteBridge_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnozYWhwY2FnYmExYTZvMnF2dWt3bHh0eXR6aGZrdWF4ZTR1dnFuOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/krmA7YIhRvwjJYbmrG/giphy.gif' },
+    // { nameKey: "superman_name", explanationKey: "superman_explanation", duration: 40, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXRlbDU5dDdwaHNjenZ6c3E1OTEwMXozZmFrYmhjaDlydDMwNG5nMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hNng9AOyUHxvPiCUiv/giphy.gif' },
+    // { nameKey: "bicycleCrunches_name", explanationKey: "bicycleCrunches_explanation", duration: 50, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXhuNHRlNHJweTU2amwxbGF0dmI4bjJtbmV4ODJiNGJvazB3ZjI3bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TMNCtgJGJnV8k/giphy.gif' },
+    // { nameKey: "reverseCrunch_name", explanationKey: "reverseCrunch_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWtuaGdmNzBnazY2b3k3ZzF3Yzh4cGxjY2t6NG1zaWRvZHUxa3ZreCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/chMEggxfebYTvHkNNG/giphy.gif' },
+    // { nameKey: "hollowHold_name", explanationKey: "hollowHold_explanation", duration: 30, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHhqZG9qZTdvZnQ4aWV3MmRkbXhvZHY1eHN4dDZxcnNhbHlrOTdyNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9XbMdlJgKXXkEtC60Q/giphy.gif' },
+    // { nameKey: "flutterKicks_name", explanationKey: "flutterKicks_explanation", duration: 40, gifUrl: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMW1jcDJ0Y215Nm9lajRoNG4zNzdkeTRicG90dmZjZzFkczg0dWNrYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jbiA1NsHa50OS2MATH/giphy.gif' },
+    // { nameKey: "mountainClimbers_name", explanationKey: "mountainClimbers_explanation", duration: 45, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2poMnN3ejBrNThzYzFzYWVxYTR5ajVsdnc5dWhpZDA2cTlwaXF4ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/D8PNyQTvanRe0/giphy.gif' },
+    // { nameKey: "russianTwist_name", explanationKey: "russianTwist_explanation", duration: 50, gifUrl: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGdzcXNncTByOTE2eXM4Z2o5MWkxYzV5ODA5aTNkYTQweXBsZTNsZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DfeEVAQlxq2oWfq5f5/giphy.gif' },
+    // { nameKey: "plank_name", explanationKey: "plank_explanation", duration: 60, gifUrl: 'https://i.imgur.com/zL1nbr9.jpeg' },
+    // { nameKey: "activeHang_name", explanationKey: "activeHang_explanation", duration: 60 , gifUrl: 'https://www.nourishmovelove.com/wp-content/uploads/2024/12/2-active-hang-on-the-bar.gif'},
+    // { nameKey: "negativePullups_name", explanationKey: "negativePullups_explanation", duration: 180 , gifUrl: 'https://www.powrpersonaltraining.com/wp-content/uploads/2025/09/Negative-Pull-Ups-Exercise-Demo.gif'},
+];
 
 // --- Utility Functions ---
 
 /** Reads the rest duration from localStorage, with validation and a fallback. */
-function getInitialRestDuration(): number {
+function getInitialRestDuration(mode: 'base' | 'advanced'): number {
     if (typeof window === 'undefined' || !window.localStorage) {
         return 30; // Default if localStorage is not available
     }
 
-    const savedValue = localStorage.getItem(LOCAL_STORAGE_KEY_REST_DURATION);
-    if (savedValue) {
-        const duration = parseInt(savedValue, 10);
+    const savedValue = localStorage.getItem(getRestDurationKey(mode));
+    // Provide a fallback to the old key
+    const oldSavedValue = localStorage.getItem('workout-timer-rest-duration');
+    const valueToUse = savedValue || (mode === 'base' ? oldSavedValue : null);
+
+    if (valueToUse) {
+        const duration = parseInt(valueToUse, 10);
         // Validate that the stored value is a number within our allowed range.
         if (!isNaN(duration) && duration >= 10 && duration <= 60) {
             return duration;
@@ -71,14 +89,18 @@ function getInitialRestDuration(): number {
 }
 
 /** Reads the duration multiplier from localStorage, with validation and a fallback. */
-function getInitialDurationMultiplier(): number {
+function getInitialDurationMultiplier(mode: 'base' | 'advanced'): number {
     if (typeof window === 'undefined' || !window.localStorage) {
         return 1; // Default if localStorage is not available
     }
 
-    const savedValue = localStorage.getItem(LOCAL_STORAGE_KEY_DURATION_MULTIPLIER);
-    if (savedValue) {
-        const multiplier = parseFloat(savedValue);
+    const savedValue = localStorage.getItem(getDurationMultiplierKey(mode));
+    // Provide a fallback to the old key
+    const oldSavedValue = localStorage.getItem('workout-timer-duration-multiplier');
+    const valueToUse = savedValue || (mode === 'base' ? oldSavedValue : null);
+
+    if (valueToUse) {
+        const multiplier = parseFloat(valueToUse);
         // Validate that the stored value is a number within our allowed range.
         if (!isNaN(multiplier) && multiplier >= 0.5 && multiplier <= 2) {
             return multiplier;
@@ -87,7 +109,6 @@ function getInitialDurationMultiplier(): number {
 
     return 1; // Default if no valid value is stored
 }
-
 
 /** Formats seconds into MM:SS string. */
 function formatTime(seconds: number): string {
@@ -187,6 +208,32 @@ function formatTime(seconds: number): string {
 
             <!-- Pre-workout configuration and list -->
             @if (!isWorkoutStarted() || isWorkoutComplete()) {
+                <!-- Workout Mode Selection -->
+                <div class="flex space-x-4 mb-6">
+                    <button (click)="workoutMode.set('base')"
+                            class="flex-1 py-3 px-4 rounded-xl font-bold text-lg transition-colors shadow-sm border-2"
+                            [class.bg-indigo-600]="workoutMode() === 'base'"
+                            [class.text-white]="workoutMode() === 'base'"
+                            [class.border-indigo-600]="workoutMode() === 'base'"
+                            [class.bg-white]="workoutMode() !== 'base'"
+                            [class.text-gray-700]="workoutMode() !== 'base'"
+                            [class.border-gray-200]="workoutMode() !== 'base'"
+                            [class.hover:border-indigo-300]="workoutMode() !== 'base'">
+                        {{ dictionary()['baseWorkout'] }}
+                    </button>
+                    <button (click)="workoutMode.set('advanced')"
+                            class="flex-1 py-3 px-4 rounded-xl font-bold text-lg transition-colors shadow-sm border-2"
+                            [class.bg-indigo-600]="workoutMode() === 'advanced'"
+                            [class.text-white]="workoutMode() === 'advanced'"
+                            [class.border-indigo-600]="workoutMode() === 'advanced'"
+                            [class.bg-white]="workoutMode() !== 'advanced'"
+                            [class.text-gray-700]="workoutMode() !== 'advanced'"
+                            [class.border-gray-200]="workoutMode() !== 'advanced'"
+                            [class.hover:border-indigo-300]="workoutMode() !== 'advanced'">
+                        {{ dictionary()['advancedWorkout'] }}
+                    </button>
+                </div>
+
                 <!-- Start Button (Visible only when not started or completed) -->
                 <button (click)="startWorkout()" 
                         class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-colors shadow-md mb-6">
@@ -365,14 +412,14 @@ export class AppComponent implements OnDestroy {
     public readonly dictionary = this.languageService.dictionary;
     public readonly languages = languages;
 
-    public readonly TOTAL_WORK_PHASES = TOTAL_WORK_PHASES;
-    public readonly LAST_PHASE = LAST_PHASE;
-
-    public exerciseList = signal<ExerciseData[]>([...INITIAL_EXERCISE_LIST]);
+    private voices: SpeechSynthesisVoice[] = [];
 
     // --- State Signals ---
-    restDuration = signal(getInitialRestDuration());
-    durationMultiplier = signal(getInitialDurationMultiplier());
+    workoutMode = signal<'base' | 'advanced'>('base');
+    baseRestDuration = signal(getInitialRestDuration('base'));
+    baseDurationMultiplier = signal(getInitialDurationMultiplier('base'));
+    advancedRestDuration = signal(getInitialRestDuration('advanced'));
+    advancedDurationMultiplier = signal(getInitialDurationMultiplier('advanced'));
     currentPhaseIndex = signal(0);
     timeLeft = signal(0);
     isPaused = signal(false);
@@ -380,6 +427,13 @@ export class AppComponent implements OnDestroy {
     pauseTimeTracker = signal(0);
     isWorkoutStarted = signal(false);
     isWorkoutComplete = signal(false);
+
+    // --- Derived Signals & Computeds ---
+    restDuration = computed(() => this.workoutMode() === 'base' ? this.baseRestDuration() : this.advancedRestDuration());
+    durationMultiplier = computed(() => this.workoutMode() === 'base' ? this.baseDurationMultiplier() : this.advancedDurationMultiplier());
+    exerciseList = computed(() => this.workoutMode() === 'base' ? BASE_EXERCISE_LIST : ADVANCED_EXERCISE_LIST);
+    totalWorkPhases = computed(() => this.exerciseList().length);
+    lastPhase = computed(() => (this.totalWorkPhases() * 2) - 1);
 
     // --- Internal Timer Management ---
     private timerId: any = null;
@@ -390,14 +444,30 @@ export class AppComponent implements OnDestroy {
         // Effect to save settings to localStorage whenever they change.
         effect(() => {
             if (typeof window !== 'undefined' && window.localStorage) {
-                localStorage.setItem(LOCAL_STORAGE_KEY_REST_DURATION, this.restDuration().toString());
-                localStorage.setItem(LOCAL_STORAGE_KEY_DURATION_MULTIPLIER, this.durationMultiplier().toString());
+                localStorage.setItem(getRestDurationKey('base'), this.baseRestDuration().toString());
+                localStorage.setItem(getDurationMultiplierKey('base'), this.baseDurationMultiplier().toString());
+                localStorage.setItem(getRestDurationKey('advanced'), this.advancedRestDuration().toString());
+                localStorage.setItem(getDurationMultiplierKey('advanced'), this.advancedDurationMultiplier().toString());
             }
         });
 
         // Add visibility change listener to re-acquire wake lock
         if (typeof document !== 'undefined') {
             document.addEventListener('visibilitychange', this.handleVisibilityChange);
+        }
+
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+             // Load voices
+             const loadVoices = () => {
+                 this.voices = window.speechSynthesis.getVoices();
+                 console.log('Voices loaded:', this.voices.length);
+             };
+             window.speechSynthesis.onvoiceschanged = loadVoices;
+             loadVoices();
+             // Retry loading voices after a short delay if empty
+             setTimeout(() => {
+                 if (this.voices.length === 0) loadVoices();
+             }, 1000);
         }
     }
 
@@ -438,7 +508,7 @@ export class AppComponent implements OnDestroy {
     exercisesDuration = computed(() => this.displayExercises().reduce((total, exercise) => total + exercise.duration, 0));
 
     totalDuration = computed(() => {
-        const totalRest = TOTAL_REST_PHASES * this.restDuration();
+        const totalRest = Math.max(0, this.displayExercises().length - 1) * this.restDuration();
         return this.exercisesDuration() + totalRest;
     });
 
@@ -471,7 +541,7 @@ export class AppComponent implements OnDestroy {
         if (this.isWorkPeriod()) {
             const exerciseNum = Math.floor(this.currentPhaseIndex() / 2) + 1;
             const exerciseName = this.currentExercise()?.name ?? dict.exercise;
-            return `${exerciseName} (${exerciseNum} ${dict.of} ${this.TOTAL_WORK_PHASES})`;
+            return `${exerciseName} (${exerciseNum} ${dict.of} ${this.totalWorkPhases()})`;
         } else {
             return dict.rest;
         }
@@ -491,9 +561,9 @@ export class AppComponent implements OnDestroy {
         const exerciseNum = Math.floor(this.currentPhaseIndex() / 2) + 1;
 
         if (this.isWorkPeriod()) {
-            return `${dict.round} ${exerciseNum} / ${this.TOTAL_WORK_PHASES}`;
+            return `${dict.round} ${exerciseNum} / ${this.totalWorkPhases()}`;
         } else {
-            return `${dict.complete} ${exerciseNum} / ${this.TOTAL_WORK_PHASES}`;
+            return `${dict.complete} ${exerciseNum} / ${this.totalWorkPhases()}`;
         }
     });
 
@@ -547,12 +617,22 @@ export class AppComponent implements OnDestroy {
 
     onRestDurationChange(event: Event) {
         const input = event.target as HTMLInputElement;
-        this.restDuration.set(Number(input.value));
+        const value = Number(input.value);
+        if (this.workoutMode() === 'base') {
+            this.baseRestDuration.set(value);
+        } else {
+            this.advancedRestDuration.set(value);
+        }
     }
 
     onDurationMultiplierChange(event: Event) {
         const input = event.target as HTMLInputElement;
-        this.durationMultiplier.set(Number(input.value));
+        const value = Number(input.value);
+        if (this.workoutMode() === 'base') {
+            this.baseDurationMultiplier.set(value);
+        } else {
+            this.advancedDurationMultiplier.set(value);
+        }
     }
 
     private calculateElapsedTimeAtPhaseStart(phaseIndex: number): number {
@@ -590,6 +670,7 @@ export class AppComponent implements OnDestroy {
             if (this.isWorkPeriod()) {
                 // Work period just ended
                 this.soundService.playEndBeep();
+                this.announceNextExercise();
             } else {
                 // Rest period just ended, exercise is about to start
                 this.soundService.playStartBeep();
@@ -611,7 +692,7 @@ export class AppComponent implements OnDestroy {
     private async runStep() {
         clearTimeout(this.timerId);
 
-        if (this.currentPhaseIndex() >= LAST_PHASE) {
+        if (this.currentPhaseIndex() >= this.lastPhase()) {
             this.isWorkoutComplete.set(true);
             this.isWorkoutStarted.set(false);
             this.timeLeft.set(0);
@@ -711,5 +792,62 @@ export class AppComponent implements OnDestroy {
 
         this.runStep();
         await this.requestWakeLock();
+    }
+
+    private announceNextExercise() {
+        if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+            return;
+        }
+
+        // We are currently in a Work phase (index i).
+        // Next phase is Rest (i+1).
+        // The exercise AFTER rest is at index (i+2).
+        // We want to get the name of that exercise.
+        const currentIndices = this.currentPhaseIndex();
+        // The upcoming work phase index (relative to 0..totalPhases)
+        const nextWorkPhaseindex = currentIndices + 2;
+        
+        // Calculate the exercise index in the list
+        const nextExerciseListIndex = nextWorkPhaseindex / 2;
+
+        const exercises = this.exerciseList();
+        if (nextExerciseListIndex < exercises.length) {
+            const nextExerciseKey = exercises[nextExerciseListIndex].nameKey;
+            // Always use English for announcement used new method
+            const englishName = this.languageService.getEnglishExerciseName(nextExerciseKey);
+            
+            this.speak(`Next is ${englishName}`);
+        }
+    }
+
+    private speak(text: string) {
+        console.log('Attempting to speak:', text);
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        
+        // Ensure voices are loaded if they weren't before
+        if (this.voices.length === 0) {
+            this.voices = window.speechSynthesis.getVoices();
+        }
+
+        // Try to find a good English voice
+        const voice = this.voices.find(v => v.lang === 'en-US' && !v.name.includes('Google')) || 
+                      this.voices.find(v => v.lang.startsWith('en')) ||
+                      null;
+        
+        if (voice) {
+            utterance.voice = voice;
+            console.log('Using voice:', voice.name);
+        } else {
+            console.warn('No English voice found, using default.');
+        }
+        
+        // Adjust rate/pitch if needed
+        utterance.rate = 1.0; 
+        
+        window.speechSynthesis.speak(utterance);
     }
 }
