@@ -252,7 +252,6 @@ function formatTime(seconds: number): string {
                         </div>
                     </div>
                 </div>
-            }
 
                 <!-- Description -->
                 <div class="border border-gray-200 rounded-xl p-4 mb-6 text-left">
@@ -269,6 +268,8 @@ function formatTime(seconds: number): string {
                         }
                     </ol>
                 </div>
+            }
+
             <!-- Exercise Details Card / Next Up Info -->
             @if (isWorkoutStarted() && !isWorkoutComplete()) {
                 <div class="border-2 rounded-xl p-4 transition-colors duration-300 mb-6"
