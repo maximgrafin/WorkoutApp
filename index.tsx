@@ -16,6 +16,10 @@ if ('serviceWorker' in navigator) {
       .then(registration => {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
         
+        if (registration.waiting) {
+          window.dispatchEvent(new CustomEvent('sw-update-available', { detail: registration.waiting }));
+        }
+
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           if (newWorker) {
