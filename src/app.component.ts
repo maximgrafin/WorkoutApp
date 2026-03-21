@@ -435,7 +435,11 @@ export class AppComponent implements OnDestroy {
     }
 
     // --- PWA Installation State ---
-    canInstall = signal(true);
+    canInstall = signal(
+        typeof window !== 'undefined' 
+            ? !window.matchMedia('(display-mode: standalone)').matches && !(window.navigator as any).standalone
+            : false
+    );
     private deferredInstallPrompt: any = null;
 
     @HostListener('window:beforeinstallprompt', ['$event'])
@@ -444,6 +448,13 @@ export class AppComponent implements OnDestroy {
         event.preventDefault();
         // Stash the event so it can be triggered later.
         this.deferredInstallPrompt = event;
+    }
+
+    @HostListener('window:appinstalled')
+    onAppInstalled() {
+        // Hide the install button right after successful installation
+        this.canInstall.set(false);
+        this.deferredInstallPrompt = null;
     }
 
     async installApp() {
