@@ -1,10 +1,9 @@
-const CACHE_NAME = 'workout-timer-cache-v9';
+const CACHE_NAME = 'workout-timer-cache-v10';
 const URLS_TO_CACHE = [
   './',
   'index.html',
   'manifest.webmanifest',
   'favicon.svg',
-  'metadata.json',
   // NOTE: Source files like .ts and .tsx are not included here
   // because they are not present on the deployed server.
   // The browser runs bundled Javascript files.
