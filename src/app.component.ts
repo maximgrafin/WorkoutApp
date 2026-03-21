@@ -49,19 +49,6 @@ const ADVANCED_EXERCISE_LIST: ExerciseData[] = [
     { nameKey: "plank_name", explanationKey: "plank_explanation", duration: 60, gifUrl: 'https://i.imgur.com/zL1nbr9.jpeg' },
     { nameKey: "activeHang_name", explanationKey: "activeHang_explanation", duration: 60 , gifUrl: 'https://www.nourishmovelove.com/wp-content/uploads/2024/12/2-active-hang-on-the-bar.gif'},
     { nameKey: "negativePullups_name", explanationKey: "negativePullups_explanation", duration: 180 , gifUrl: 'https://www.powrpersonaltraining.com/wp-content/uploads/2025/09/Negative-Pull-Ups-Exercise-Demo.gif'},
-
-    // { nameKey: "bodyweightSquats_name", explanationKey: "bodyweightSquats_explanation", duration: 45, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWFlbGRwODE1b2tnMHNla3B1dnQ1YWx2c2pwdWM5dzZnbmtnNXl2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RTNDA7OxcwuOMcCPhL/giphy.gif' },
-    // { nameKey: "gluteBridge_name", explanationKey: "gluteBridge_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnozYWhwY2FnYmExYTZvMnF2dWt3bHh0eXR6aGZrdWF4ZTR1dnFuOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/krmA7YIhRvwjJYbmrG/giphy.gif' },
-    // { nameKey: "superman_name", explanationKey: "superman_explanation", duration: 40, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXRlbDU5dDdwaHNjenZ6c3E1OTEwMXozZmFrYmhjaDlydDMwNG5nMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hNng9AOyUHxvPiCUiv/giphy.gif' },
-    // { nameKey: "bicycleCrunches_name", explanationKey: "bicycleCrunches_explanation", duration: 50, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXhuNHRlNHJweTU2amwxbGF0dmI4bjJtbmV4ODJiNGJvazB3ZjI3bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TMNCtgJGJnV8k/giphy.gif' },
-    // { nameKey: "reverseCrunch_name", explanationKey: "reverseCrunch_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWtuaGdmNzBnazY2b3k3ZzF3Yzh4cGxjY2t6NG1zaWRvZHUxa3ZreCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/chMEggxfebYTvHkNNG/giphy.gif' },
-    // { nameKey: "hollowHold_name", explanationKey: "hollowHold_explanation", duration: 30, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHhqZG9qZTdvZnQ4aWV3MmRkbXhvZHY1eHN4dDZxcnNhbHlrOTdyNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9XbMdlJgKXXkEtC60Q/giphy.gif' },
-    // { nameKey: "flutterKicks_name", explanationKey: "flutterKicks_explanation", duration: 40, gifUrl: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMW1jcDJ0Y215Nm9lajRoNG4zNzdkeTRicG90dmZjZzFkczg0dWNrYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jbiA1NsHa50OS2MATH/giphy.gif' },
-    // { nameKey: "mountainClimbers_name", explanationKey: "mountainClimbers_explanation", duration: 45, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2poMnN3ejBrNThzYzFzYWVxYTR5ajVsdnc5dWhpZDA2cTlwaXF4ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/D8PNyQTvanRe0/giphy.gif' },
-    // { nameKey: "russianTwist_name", explanationKey: "russianTwist_explanation", duration: 50, gifUrl: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGdzcXNncTByOTE2eXM4Z2o5MWkxYzV5ODA5aTNkYTQweXBsZTNsZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DfeEVAQlxq2oWfq5f5/giphy.gif' },
-    // { nameKey: "plank_name", explanationKey: "plank_explanation", duration: 60, gifUrl: 'https://i.imgur.com/zL1nbr9.jpeg' },
-    // { nameKey: "activeHang_name", explanationKey: "activeHang_explanation", duration: 60 , gifUrl: 'https://www.nourishmovelove.com/wp-content/uploads/2024/12/2-active-hang-on-the-bar.gif'},
-    // { nameKey: "negativePullups_name", explanationKey: "negativePullups_explanation", duration: 180 , gifUrl: 'https://www.powrpersonaltraining.com/wp-content/uploads/2025/09/Negative-Pull-Ups-Exercise-Demo.gif'},
 ];
 
 // --- Utility Functions ---
@@ -265,7 +252,9 @@ function formatTime(seconds: number): string {
                         </div>
                     </div>
                 </div>
+            }
 
+                <!-- Description -->
                 <div class="border border-gray-200 rounded-xl p-4 mb-6 text-left">
                     <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">{{ dictionary()['fullWorkoutRoutine'] }}</h2>
                     <ol class="list-decimal list-inside space-y-4 text-gray-700">
@@ -280,8 +269,6 @@ function formatTime(seconds: number): string {
                         }
                     </ol>
                 </div>
-            }
-
             <!-- Exercise Details Card / Next Up Info -->
             @if (isWorkoutStarted() && !isWorkoutComplete()) {
                 <div class="border-2 rounded-xl p-4 transition-colors duration-300 mb-6"
