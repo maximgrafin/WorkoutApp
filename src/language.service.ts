@@ -48,6 +48,7 @@ const dictionaries: Record<Language, any> = {
     workoutCompleteMessage: 'Great Job! You have completed your workout.',
     updateAvailable: 'A new version is available!',
     applyUpdate: 'Update Now',
+    installApp: 'Install App',
     exercises: {
       catCow_name: "Cat Cow",
       catCow_explanation: "Start on all fours. Inhale as you drop your belly and look up (Cow). Exhale as you round your spine and tuck your chin (Cat).",
@@ -128,6 +129,7 @@ const dictionaries: Record<Language, any> = {
     workoutCompleteMessage: 'Отличная работа! Тренировка завершена.',
     updateAvailable: 'Доступна новая версия!',
     applyUpdate: 'Обновить сейчас',
+    installApp: 'Установить приложение',
     exercises: {
       catCow_name: "Кошка-Корова",
       catCow_explanation: "Начните на четвереньках. Вдохните, прогибая спину и поднимая голову (Корова). Выдохните, округляя спину и прижимая подбородок к груди (Кошка).",
@@ -208,6 +210,7 @@ const dictionaries: Record<Language, any> = {
     workoutCompleteMessage: 'Gut gemacht! Du hast dein Training abgeschlossen.',
     updateAvailable: 'Eine neue Version ist verfügbar!',
     applyUpdate: 'Jetzt aktualisieren',
+    installApp: 'App installieren',
     exercises: {
       catCow_name: "Katze-Kuh",
       catCow_explanation: "Beginnen Sie im Vierfüßlerstand. Atmen Sie ein, während Sie den Bauch senken und nach oben schauen (Kuh). Atmen Sie aus, während Sie den Rücken runden und das Kinn zur Brust ziehen (Katze).",
@@ -288,6 +291,7 @@ const dictionaries: Record<Language, any> = {
     workoutCompleteMessage: '¡Buen trabajo! Has completado tu entrenamiento.',
     updateAvailable: '¡Una nueva versión está disponible!',
     applyUpdate: 'Actualizar ahora',
+    installApp: 'Instalar la aplicación',
     exercises: {
       catCow_name: "Gato-Vaca",
       catCow_explanation: "Comienza a cuatro patas. Inhala mientras bajas el abdomen y miras hacia arriba (Vaca). Exhala mientras redondeas la columna y metes la barbilla (Gato).",
@@ -368,6 +372,7 @@ const dictionaries: Record<Language, any> = {
     workoutCompleteMessage: 'Відмінна робота! Тренування завершено.',
     updateAvailable: 'Доступна нова версія!',
     applyUpdate: 'Оновити зараз',
+    installApp: 'Встановити додаток',
     exercises: {
       catCow_name: "Кішка-Корова",
       catCow_explanation: "Почніть навкарачки. Вдихніть, прогинаючи спину і дивлячись вгору (Корова). Видихніть, округлюючи спину і притискаючи підборіддя до грудей (Кішка).",

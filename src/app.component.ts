@@ -140,8 +140,15 @@ function formatTime(seconds: number): string {
                     }
                 </button>
 
-                <!-- Language Switcher -->
-                <div class="flex items-center space-x-1 text-gray-500">
+                <!-- Language Switcher & Install App -->
+                <div class="flex items-center space-x-3 text-gray-500">
+                    @if (canInstall()) {
+                        <button (click)="installApp()" class="px-3 py-1 bg-indigo-100 text-indigo-700 font-bold rounded-md hover:bg-indigo-200 transition-colors text-sm flex items-center shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                            {{ dictionary()['installApp'] }}
+                        </button>
+                    }
+                    <div class="flex items-center space-x-1">
                     @for (lang of languages; track lang.code; let isFirst = $first) {
                         @if (!isFirst) {
                             <div class="w-px h-4 bg-gray-300"></div>
@@ -153,6 +160,7 @@ function formatTime(seconds: number): string {
                             {{ lang.name }}
                         </button>
                     }
+                    </div>
                 </div>
             </div>
         }
@@ -424,6 +432,32 @@ export class AppComponent implements OnDestroy {
         if (this.waitingWorker) {
             this.waitingWorker.postMessage({ type: 'SKIP_WAITING' });
         }
+    }
+
+    // --- PWA Installation State ---
+    canInstall = signal(false);
+    private deferredInstallPrompt: any = null;
+
+    @HostListener('window:beforeinstallprompt', ['$event'])
+    onBeforeInstallPrompt(event: Event) {
+        // Prevent the mini-infobar from appearing on mobile
+        event.preventDefault();
+        // Stash the event so it can be triggered later.
+        this.deferredInstallPrompt = event;
+        // Update UI notify the user they can install the PWA
+        this.canInstall.set(true);
+    }
+
+    async installApp() {
+        if (!this.deferredInstallPrompt) return;
+        // Show the install prompt
+        this.deferredInstallPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        const { outcome } = await this.deferredInstallPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        // We've used the prompt, and can't use it again, throw it away
+        this.deferredInstallPrompt = null;
+        this.canInstall.set(false);
     }
 
     // --- State Signals ---
