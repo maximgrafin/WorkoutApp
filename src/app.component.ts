@@ -26,7 +26,8 @@ const BASE_EXERCISE_LIST: ExerciseData[] = [
     { nameKey: "catCow_name", explanationKey: "catCow_explanation", duration: 60, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzU3OXl3cTczYmd3bWFyZ29md3l6MmVwb2VnaWM1ODRzazNidDhvMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JdtyfG3ZSE8iOlDs64/giphy.gif' },
     { nameKey: "birdDogLeft_name", explanationKey: "birdDogLeft_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXRiZmxqNTM4OGY5bmswZXp0MnJzMWdnNGRvMW9nM21kcWpsZjd6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Nwx7Grs4AOlkTba/giphy.gif' },
     { nameKey: "birdDogRight_name", explanationKey: "birdDogRight_explanation", duration: 45, gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXRiZmxqNTM4OGY5bmswZXp0MnJzMWdnNGRvMW9nM21kcWpsZjd6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Nwx7Grs4AOlkTba/giphy.gif' },
-    { nameKey: "cossackSquats_name", explanationKey: "cossackSquats_explanation", duration: 60, gifUrl: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHd2enk1eGQ2OTd4bWR0MnVzMXpzdXViMTdrNGIwYWZzNWk0MDFocyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/SiKqOc1nzHEAC4d5fX/giphy.gif' },
+    { nameKey: "legSwingsLeft_name", explanationKey: "legSwingsLeft_explanation", duration: 45 , gifUrl: 'https://cdn.shopify.com/s/files/1/0052/7043/7978/t/4/assets/Leg-Swings.gif?v=1596040141'},
+    { nameKey: "legSwingsRight_name", explanationKey: "legSwingsRight_explanation", duration: 45 , gifUrl: 'https://cdn.shopify.com/s/files/1/0052/7043/7978/t/4/assets/Leg-Swings.gif?v=1596040141'},
     { nameKey: "quadStretchLeft_name", explanationKey: "quadStretchLeft_explanation", duration: 45, gifUrl: 'https://sportydoctor.com/wp-content/uploads/Standing-Quad-1.gif' },
     { nameKey: "quadStretchRight_name", explanationKey: "quadStretchRight_explanation", duration: 45, gifUrl: 'https://sportydoctor.com/wp-content/uploads/Standing-Quad-1.gif' },
     { nameKey: "wallCalfStretchLeft_name", explanationKey: "wallCalfStretchLeft_explanation", duration: 60, gifUrl: 'https://sportydoctor.com/wp-content/uploads/Wall-Calf-Stretch.gif' },
@@ -39,6 +40,11 @@ const BASE_EXERCISE_LIST: ExerciseData[] = [
 ];
 
 const ADVANCED_EXERCISE_LIST: ExerciseData[] = [
+    { nameKey: "jumpingJacks_name", explanationKey: "jumpingJacks_explanation", duration: 60 , gifUrl: 'https://sworkit.com/wp-content/uploads/2020/06/sworkit-jumping-jack.gif'},
+    { nameKey: "armCircles_name", explanationKey: "armCircles_explanation", duration: 60 , gifUrl: 'https://images.squarespace-cdn.com/content/v1/61dcd0d01002a946fb3eb893/6e3a5812-71ba-43a0-b9d3-806e11fba396/Arm+Circles+gif.gif'},
+    { nameKey: "gluteBridgeDynamic_name", explanationKey: "gluteBridgeDynamic_explanation", duration: 60 , gifUrl: 'https://cdn.shopify.com/s/files/1/0618/9462/3460/files/glute-bridge-f18ea3dea1f9427a82688d1669701b17.gif'},
+    { nameKey: "plankToeTouches_name", explanationKey: "plankToeTouches_explanation", duration: 60 , gifUrl: 'https://media.self.com/photos/63867b2c8548110dbb7bbe5e/master/w_1024%2Cc_limit/Maggie-plank-to-pike-to-toe-touch.gif'},
+
     { nameKey: "sidePlankRight_name", explanationKey: "sidePlankRight_explanation", duration: 30, gifUrl: 'https://i.imgur.com/tor7hei.jpeg' },
     { nameKey: "sidePlankLeft_name", explanationKey: "sidePlankLeft_explanation", duration: 30, gifUrl: 'https://i.imgur.com/S8HxmGu.jpeg' },
     { nameKey: "singleLegGluteBridgeLeft_name", explanationKey: "singleLegGluteBridgeLeft_explanation", duration: 90, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjQ0MDl3YXNueHgwbWpsdG1tb3MwN28xYnNmbHZwbW0yY2w5MjNueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SJWtWnRFsTiNVSECVP/giphy.gif' },
