@@ -9,40 +9,30 @@ bootstrapApplication(AppComponent, {
   ],
 }).catch((err) => console.error(err));
 
+// Register the automated PWA service worker
+// We use a @ts-ignore because TypeScript might not recognize the virtual module
+// @ts-ignore
+import { registerSW } from 'virtual:pwa-register';
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    const swUrl = import.meta.env ? import.meta.env.BASE_URL + 'sw.js' : 'sw.js';
-    navigator.serviceWorker.register(swUrl)
-      .then(registration => {
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        
-        if (registration.waiting) {
-          window.dispatchEvent(new CustomEvent('sw-update-available', { detail: registration.waiting }));
-        }
-
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // New service worker is installed but waiting. Let the app know.
-                window.dispatchEvent(new CustomEvent('sw-update-available', { detail: newWorker }));
-              }
-            });
+    const updateSW = registerSW({
+      onNeedRefresh() {
+        // Create a wrapper object matching the ServiceWorker interface expected by the Angular component.
+        // When the component calls waitingWorker.postMessage({ type: 'SKIP_WAITING' }),
+        // we trigger the updateSW(true) function provided by vite-plugin-pwa.
+        const fakeWorker = {
+          postMessage: (msg: any) => {
+            if (msg && msg.type === 'SKIP_WAITING') {
+              updateSW(true);
+            }
           }
-        });
-      })
-      .catch(err => {
-        console.log('ServiceWorker registration failed: ', err);
-      });
-
-    // Handle the controllerchange event to reload the page when the new worker takes over
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
-        window.location.reload();
-        refreshing = true;
-      }
+        };
+        window.dispatchEvent(new CustomEvent('sw-update-available', { detail: fakeWorker }));
+      },
+      onOfflineReady() {
+        console.log('App is ready to work offline');
+      },
     });
   });
 }
