@@ -45,8 +45,8 @@ const ADVANCED_EXERCISE_LIST: ExerciseData[] = [
     { nameKey: "gluteBridgeDynamic_name", explanationKey: "gluteBridgeDynamic_explanation", duration: 60 , gifUrl: 'https://cdn.shopify.com/s/files/1/0618/9462/3460/files/glute-bridge-f18ea3dea1f9427a82688d1669701b17.gif'},
     { nameKey: "plankToeTouches_name", explanationKey: "plankToeTouches_explanation", duration: 60 , gifUrl: 'https://media.self.com/photos/63867b2c8548110dbb7bbe5e/master/w_1024%2Cc_limit/Maggie-plank-to-pike-to-toe-touch.gif'},
 
-    { nameKey: "sidePlankRight_name", explanationKey: "sidePlankRight_explanation", duration: 30, gifUrl: 'https://i.imgur.com/tor7hei.jpeg' },
-    { nameKey: "sidePlankLeft_name", explanationKey: "sidePlankLeft_explanation", duration: 30, gifUrl: 'https://i.imgur.com/S8HxmGu.jpeg' },
+    { nameKey: "sidePlankRight_name", explanationKey: "sidePlankRight_explanation", duration: 60, gifUrl: 'https://i.imgur.com/tor7hei.jpeg' },
+    { nameKey: "sidePlankLeft_name", explanationKey: "sidePlankLeft_explanation", duration: 60, gifUrl: 'https://i.imgur.com/S8HxmGu.jpeg' },
     { nameKey: "singleLegGluteBridgeLeft_name", explanationKey: "singleLegGluteBridgeLeft_explanation", duration: 90, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjQ0MDl3YXNueHgwbWpsdG1tb3MwN28xYnNmbHZwbW0yY2w5MjNueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SJWtWnRFsTiNVSECVP/giphy.gif' },
     { nameKey: "singleLegGluteBridgeRight_name", explanationKey: "singleLegGluteBridgeRight_explanation", duration: 90, gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjQ0MDl3YXNueHgwbWpsdG1tb3MwN28xYnNmbHZwbW0yY2w5MjNueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SJWtWnRFsTiNVSECVP/giphy.gif' },
     { nameKey: "eccentricCalfRaiseLeft_name", explanationKey: "eccentricCalfRaiseLeft_explanation", duration: 90, gifUrl: 'https://www.runnersworld.co.za/wp-content/uploads/2025/10/eccentric-single-leg-calf-raise-calf-stretching-0028-652ef00e9074b.gif'},
