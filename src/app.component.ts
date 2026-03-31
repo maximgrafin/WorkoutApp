@@ -37,6 +37,7 @@ const BASE_EXERCISE_LIST: ExerciseData[] = [
     { nameKey: "ywRaises_name", explanationKey: "ywRaises_explanation", duration: 60, gifUrl: 'https://i.makeagif.com/media/5-08-2025/5hrukN.gif' },
     { nameKey: "pushUps_name", explanationKey: "pushUps_explanation", duration: 40, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHA3Zm02OXp1c3Bjb2hpeGU5MXpreWlzbWV1MWdldjVrNHRiazM3cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0GqzRhOgrnKoTlCM/giphy.gif' },
     { nameKey: "plank_name", explanationKey: "plank_explanation", duration: 60, gifUrl: 'https://i.imgur.com/zL1nbr9.jpeg' },
+    { nameKey: "activeHang_name", explanationKey: "activeHang_explanation", duration: 60 , gifUrl: 'https://www.nourishmovelove.com/wp-content/uploads/2024/12/2-active-hang-on-the-bar.gif'},
 ];
 
 const ADVANCED_EXERCISE_LIST: ExerciseData[] = [
@@ -737,6 +738,7 @@ export class AppComponent implements OnDestroy {
             } else {
                 // Rest period just ended, exercise is about to start
                 this.soundService.playStartBeep();
+                this.announceStartOfExercise((this.currentPhaseIndex() + 1) / 2);
             }
 
             this.currentPhaseIndex.update(i => i + 1);
@@ -787,6 +789,7 @@ export class AppComponent implements OnDestroy {
         clearTimeout(this.timerId);
         clearInterval(this.pauseTimerId);
 
+        this.announceStartOfExercise(0);
         this.runStep();
         await this.requestWakeLock();
     }
@@ -818,6 +821,9 @@ export class AppComponent implements OnDestroy {
 
         this.elapsedTime.update(e => e + this.timeLeft());
         this.currentPhaseIndex.update(i => i + 1);
+        if (type === 'rest') {
+            this.announceStartOfExercise(this.currentPhaseIndex() / 2);
+        }
         this.timeLeft.set(0);
 
         this.isPaused.set(false);
@@ -855,6 +861,22 @@ export class AppComponent implements OnDestroy {
 
         this.runStep();
         await this.requestWakeLock();
+    }
+
+    private announceStartOfExercise(exerciseListIndex: number) {
+        if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+            return;
+        }
+
+        const exercises = this.exerciseList();
+        const displayExercises = this.displayExercises();
+        if (exerciseListIndex < exercises.length) {
+            const exerciseKey = exercises[exerciseListIndex].nameKey;
+            const englishName = this.languageService.getEnglishExerciseName(exerciseKey);
+            const duration = displayExercises[exerciseListIndex].duration;
+            
+            this.speak(`${englishName} for ${duration} seconds`);
+        }
     }
 
     private announceNextExercise() {
