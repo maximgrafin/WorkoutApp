@@ -38,6 +38,7 @@ const BASE_EXERCISE_LIST: ExerciseData[] = [
     { nameKey: "pushUps_name", explanationKey: "pushUps_explanation", duration: 40, gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHA3Zm02OXp1c3Bjb2hpeGU5MXpreWlzbWV1MWdldjVrNHRiazM3cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0GqzRhOgrnKoTlCM/giphy.gif' },
     { nameKey: "plank_name", explanationKey: "plank_explanation", duration: 60, gifUrl: 'https://i.imgur.com/zL1nbr9.jpeg' },
     { nameKey: "activeHang_name", explanationKey: "activeHang_explanation", duration: 60 , gifUrl: 'https://www.nourishmovelove.com/wp-content/uploads/2024/12/2-active-hang-on-the-bar.gif'},
+    { nameKey: "childPose_name", explanationKey: "childPose_explanation", duration: 60 },
 ];
 
 const ADVANCED_EXERCISE_LIST: ExerciseData[] = [
